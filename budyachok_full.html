@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Будячок-Святий — Мультфільм про Благодать</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9933A;
+  --gold-light: #E8C46A;
+  --gold-pale: #F5E8C0;
+  --thistle: #7B4F8E;
+  --thistle-light: #B07DC4;
+  --thistle-bloom: #D4A0E8;
+  --parchment: #F2E8D5;
+  --parchment-dark: #E0CBA8;
+  --ink: #2C1810;
+  --ink-soft: #5C3D2E;
+  --red-robe: #9B2335;
+  --blue-robe: #2B4F8A;
+  --green-stem: #4A7C3F;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--ink);
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--parchment);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ─── CURSOR ─── */
+#cursor {
+  position: fixed;
+  width: 20px; height: 20px;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s;
+}
+#cursor svg { width:100%; height:100%; }
+#cursor-trail {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+}
+.trail-dot {
+  position: absolute;
+  width:6px; height:6px;
+  border-radius:50%;
+  background: var(--gold);
+  transform: translate(-50%,-50%);
+  opacity:0.6;
+  pointer-events:none;
+}
+
+/* ─── PARTICLES ─── */
+#particles {
+  position: fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  overflow:hidden;
+}
+.particle {
+  position:absolute;
+  border-radius:50%;
+  background: radial-gradient(circle, var(--gold-light), transparent);
+  animation: particleFloat linear infinite;
+  opacity:0;
+}
+@keyframes particleFloat {
+  0%   { transform: translateY(100vh) rotate(0deg); opacity:0; }
+  10%  { opacity:0.4; }
+  90%  { opacity:0.2; }
+  100% { transform: translateY(-20vh) rotate(360deg); opacity:0; }
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top:0; left:0; right:0;
+  z-index: 100;
+  padding: 16px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to bottom, rgba(44,24,16,0.95), transparent);
+}
+.nav-brand {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: 3px;
+}
+.nav-links {
+  display: flex;
+  gap: 30px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--parchment);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.3s, color 0.3s;
+}
+.nav-links a:hover { opacity: 1; color: var(--gold); }
+
+/* ─── MUSIC BUTTON ─── */
+#music-btn {
+  position: fixed;
+  bottom: 30px; right: 30px;
+  z-index: 200;
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  background: rgba(44,24,16,0.9);
+  color: var(--gold);
+  font-size: 20px;
+  cursor: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  backdrop-filter: blur(10px);
+}
+#music-btn:hover {
+  background: var(--gold);
+  color: var(--ink);
+  transform: scale(1.1);
+}
+#music-btn.playing { animation: musicPulse 1s ease-in-out infinite alternate; }
+@keyframes musicPulse {
+  from { box-shadow: 0 0 10px rgba(201,147,58,0.3); }
+  to   { box-shadow: 0 0 30px rgba(201,147,58,0.8), 0 0 60px rgba(201,147,58,0.3); }
+}
+
+/* ─── HERO ─── */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 20px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated star background */
+#hero::before {
+  content:'';
+  position:absolute; inset:0;
+  background: 
+    radial-gradient(ellipse at 50% 0%, rgba(201,147,58,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 80%, rgba(123,79,142,0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(75,124,63,0.08) 0%, transparent 40%);
+  animation: bgShift 8s ease-in-out infinite alternate;
+}
+@keyframes bgShift {
+  from { opacity:0.6; transform:scale(1); }
+  to   { opacity:1;   transform:scale(1.05); }
+}
+
+.hero-eyebrow {
+  font-size: 11px;
+  letter-spacing: 6px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  opacity:0;
+  animation: fadeUp 1s 0.5s forwards;
+}
+
+/* ── SAINT SVG WRAPPER ── */
+.saint-wrapper {
+  position: relative;
+  width: 280px; height: 320px;
+  margin: 0 auto 20px;
+  opacity:0;
+  animation: fadeIn 1.5s 0.8s forwards;
+}
+
+/* Floating thistles around hero */
+.hero-thistle {
+  position: absolute;
+  opacity: 0.25;
+  animation: sway 6s ease-in-out infinite;
+}
+.hero-thistle:nth-child(1) { left:5%; top:20%; animation-delay:0s; }
+.hero-thistle:nth-child(2) { right:5%; top:25%; animation-delay:1.5s; transform:scaleX(-1); }
+.hero-thistle:nth-child(3) { left:10%; bottom:20%; animation-delay:3s; }
+.hero-thistle:nth-child(4) { right:10%; bottom:25%; animation-delay:4.5s; transform:scaleX(-1); }
+@keyframes sway {
+  0%,100% { transform: rotate(-3deg); }
+  50%      { transform: rotate(3deg); }
+}
+.hero-thistle:nth-child(2), .hero-thistle:nth-child(4) {
+  animation: swayR 6s ease-in-out infinite;
+}
+@keyframes swayR {
+  0%,100% { transform: scaleX(-1) rotate(-3deg); }
+  50%      { transform: scaleX(-1) rotate(3deg); }
+}
+
+.hero-title {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: clamp(32px, 6vw, 68px);
+  font-weight: 700;
+  color: var(--gold-light);
+  line-height: 1.1;
+  margin-bottom: 12px;
+  text-shadow: 0 0 60px rgba(201,147,58,0.4);
+  opacity:0;
+  animation: fadeUp 1s 1.2s forwards;
+}
+
+.hero-sub {
+  font-size: clamp(15px,2.5vw,22px);
+  font-style: italic;
+  color: var(--thistle-bloom);
+  letter-spacing: 4px;
+  margin-bottom: 30px;
+  opacity:0;
+  animation: fadeUp 1s 1.5s forwards;
+}
+
+.hero-quote {
+  font-size: clamp(14px,2vw,18px);
+  font-style: italic;
+  color: var(--parchment);
+  opacity:0.8;
+  max-width: 480px;
+  line-height: 1.9;
+  border-left: 2px solid var(--gold);
+  padding-left: 20px;
+  text-align: left;
+  opacity:0;
+  animation: fadeUp 1s 1.8s forwards;
+}
+
+.scroll-cta {
+  margin-top: 50px;
+  opacity:0;
+  animation: fadeIn 1s 2.5s forwards;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+}
+.scroll-cta span {
+  font-size: 10px;
+  letter-spacing: 5px;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+.scroll-arrow {
+  width: 1px; height: 50px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: arrowDrop 2s ease-in-out infinite;
+}
+@keyframes arrowDrop {
+  0%,100% { transform: scaleY(0.7); opacity:0.5; }
+  50%      { transform: scaleY(1); opacity:1; }
+}
+
+/* ─── SECTIONS ─── */
+section { position:relative; z-index:1; }
+
+.section-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 80px 30px;
+}
+
+.section-label {
+  font-size: 10px;
+  letter-spacing: 6px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: clamp(22px,3.5vw,38px);
+  color: var(--gold-light);
+  margin-bottom: 40px;
+  position:relative;
+}
+.section-title::after {
+  content:'';
+  display:block;
+  width:50px; height:2px;
+  background: var(--gold);
+  margin-top: 14px;
+}
+
+/* ─── SYNOPSIS ─── */
+#synopsis {
+  background: linear-gradient(135deg, rgba(92,61,46,0.3), rgba(44,24,16,0.5));
+  border-top: 1px solid rgba(201,147,58,0.2);
+  border-bottom: 1px solid rgba(201,147,58,0.2);
+}
+
+.synopsis-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  align-items: center;
+}
+@media(max-width:700px){ .synopsis-cols { grid-template-columns:1fr; } }
+
+.synopsis-text {
+  font-size: clamp(15px,1.8vw,19px);
+  line-height: 2.1;
+  color: rgba(242,232,213,0.85);
+}
+.synopsis-text em {
+  color: var(--thistle-bloom);
+  font-style: italic;
+}
+
+.synopsis-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.grace-box {
+  background: linear-gradient(135deg, rgba(155,35,53,0.2), rgba(43,79,138,0.2));
+  border: 1px solid rgba(201,147,58,0.4);
+  padding: 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  cursor: none;
+  transition: transform 0.3s;
+}
+.grace-box:hover { transform: translateY(-4px); }
+.grace-box::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  background: linear-gradient(135deg, transparent, rgba(201,147,58,0.05));
+}
+.grace-box-icon { font-size: 48px; margin-bottom:10px; display:block; animation: floatItem 3s ease-in-out infinite; }
+.grace-box-title {
+  font-family:'Cinzel Decorative', cursive;
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing:2px;
+  margin-bottom:6px;
+}
+.grace-box-sub {
+  font-size: 13px;
+  font-style:italic;
+  color: rgba(242,232,213,0.6);
+}
+
+/* ─── CHARACTERS ─── */
+#characters { background: rgba(44,24,16,0.4); }
+
+.chars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px,1fr));
+  gap: 24px;
+}
+
+.char-card {
+  position: relative;
+  padding: 36px 24px 28px;
+  border: 1px solid rgba(201,147,58,0.2);
+  background: rgba(92,61,46,0.15);
+  text-align: center;
+  transition: all 0.4s;
+  overflow:hidden;
+  cursor: none;
+}
+.char-card::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:3px;
+  transition: height 0.4s;
+}
+.char-card.hero-char::before { background: linear-gradient(to right, var(--thistle), var(--gold)); }
+.char-card.hope-char::before { background: linear-gradient(to right, var(--green-stem), var(--thistle-bloom)); }
+.char-card.villain-char::before { background: linear-gradient(to right, #444, #222); }
+.char-card.beetle-char::before { background: linear-gradient(to right, #1a1a1a, #444); }
+
+.char-card:hover {
+  background: rgba(92,61,46,0.35);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  border-color: rgba(201,147,58,0.5);
+}
+.char-card:hover::before { height:6px; }
+
+.char-bg-text {
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  font-size:120px;
+  opacity:0.04;
+  font-family:'Cinzel Decorative',cursive;
+  pointer-events:none;
+  user-select:none;
+}
+
+.char-emoji { font-size:52px; margin-bottom:14px; display:block; }
+.char-name {
+  font-family:'Cinzel Decorative',cursive;
+  font-size:13px;
+  color: var(--gold-light);
+  margin-bottom:6px;
+  letter-spacing:1px;
+}
+.char-role {
+  font-size:10px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color: var(--thistle-bloom);
+  margin-bottom:14px;
+}
+.char-card.villain-char .char-role,
+.char-card.beetle-char .char-role { color: rgba(242,232,213,0.4); }
+.char-desc {
+  font-size:14px;
+  font-style:italic;
+  color: rgba(242,232,213,0.65);
+  line-height:1.7;
+}
+
+/* ─── EPISODES ─── */
+#episodes {
+  background: linear-gradient(180deg, rgba(44,24,16,0.8), rgba(123,79,142,0.1), rgba(44,24,16,0.8));
+}
+
+.episodes-list { display:flex; flex-direction:column; gap:0; }
+
+.ep {
+  display: flex;
+  gap:36px;
+  padding:36px 0;
+  border-bottom:1px solid rgba(201,147,58,0.15);
+  align-items:flex-start;
+  position:relative;
+  transition: background 0.4s;
+  cursor: none;
+}
+.ep:hover { background: rgba(201,147,58,0.04); }
+.ep:hover .ep-num { -webkit-text-stroke-color: var(--gold-light); }
+
+.ep-num {
+  font-family:'Cinzel Decorative',cursive;
+  font-size: 56px;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(201,147,58,0.3);
+  line-height:1;
+  min-width:80px;
+  text-align:center;
+  transition: -webkit-text-stroke-color 0.3s;
+  user-select:none;
+}
+
+.ep-body { flex:1; }
+.ep-icon { font-size:28px; margin-bottom:10px; display:block; }
+.ep-title {
+  font-family:'Cinzel Decorative',cursive;
+  font-size:17px;
+  color: var(--gold-light);
+  margin-bottom:10px;
+}
+.ep-desc {
+  font-size:15px;
+  font-style:italic;
+  color:rgba(242,232,213,0.7);
+  line-height:1.8;
+  margin-bottom:12px;
+}
+.ep-tag {
+  display:inline-block;
+  font-size:10px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color: var(--thistle-bloom);
+  border:1px solid rgba(176,125,196,0.4);
+  padding:4px 14px;
+  border-radius:20px;
+}
+
+/* ─── SYMBOLISM ─── */
+#symbolism {
+  background: rgba(44,24,16,0.6);
+  border-top:1px solid rgba(201,147,58,0.15);
+}
+
+.sym-grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
+  gap:24px;
+}
+
+.sym-card {
+  padding:30px 24px;
+  border-left:2px solid var(--gold);
+  background:rgba(201,147,58,0.05);
+  transition:all 0.3s;
+  cursor:none;
+}
+.sym-card:hover {
+  background:rgba(201,147,58,0.1);
+  transform:translateX(6px);
+}
+.sym-icon { font-size:36px; margin-bottom:12px; }
+.sym-name {
+  font-family:'Cinzel Decorative',cursive;
+  font-size:13px;
+  color:var(--gold);
+  margin-bottom:8px;
+}
+.sym-arrow { color:var(--gold); margin:0 8px; }
+.sym-meaning { font-style:italic; color:var(--thistle-bloom); font-size:14px; }
+.sym-desc {
+  margin-top:10px;
+  font-size:14px;
+  color:rgba(242,232,213,0.6);
+  line-height:1.7;
+}
+
+/* ─── GRACE REVEAL ─── */
+#grace-reveal {
+  padding:0;
+  overflow:hidden;
+}
+
+.grace-scene {
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:80px 30px;
+  position:relative;
+  background: radial-gradient(ellipse at center, rgba(123,79,142,0.2) 0%, rgba(44,24,16,0.9) 70%);
+}
+
+/* Animated box */
+.magic-box-container {
+  position:relative;
+  width:160px; height:160px;
+  margin:0 auto 40px;
+  cursor:none;
+}
+
+.magic-box {
+  width:100%; height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform 1s ease;
+  animation: boxFloat 4s ease-in-out infinite;
+}
+.magic-box.opened { transform:rotateY(180deg) rotateX(20deg); }
+
+@keyframes boxFloat {
+  0%,100% { transform:translateY(0) rotateZ(-2deg); }
+  50%      { transform:translateY(-12px) rotateZ(2deg); }
+}
+
+.box-glow {
+  position:absolute; inset:-20px;
+  background: radial-gradient(circle, rgba(201,147,58,0.3), transparent);
+  border-radius:50%;
+  animation: glowPulse 2s ease-in-out infinite;
+}
+@keyframes glowPulse {
+  0%,100%{ transform:scale(0.9); opacity:0.5; }
+  50%    { transform:scale(1.1); opacity:1; }
+}
+
+.box-svg { width:120px; height:120px; }
+
+.grace-cta {
+  font-family:'Cinzel Decorative',cursive;
+  font-size:15px;
+  color:var(--gold);
+  letter-spacing:3px;
+  margin-bottom:30px;
+  cursor:none;
+}
+
+.open-box-btn {
+  background:transparent;
+  border:2px solid var(--gold);
+  color:var(--gold);
+  font-family:'Cinzel Decorative',cursive;
+  font-size:13px;
+  letter-spacing:3px;
+  padding:16px 40px;
+  cursor:none;
+  transition:all 0.3s;
+  position:relative;
+  overflow:hidden;
+}
+.open-box-btn::before {
+  content:'';
+  position:absolute; inset:0;
+  background:var(--gold);
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform 0.3s;
+  z-index:-1;
+}
+.open-box-btn:hover::before { transform:scaleX(1); }
+.open-box-btn:hover { color:var(--ink); }
+
+/* Mirror reveal */
+.mirror-reveal {
+  display:none;
+  margin-top:40px;
+  text-align:center;
+}
+.mirror-reveal.show { display:block; animation:fadeUp 1s forwards; }
+
+.mirror-frame {
+  width:200px; height:260px;
+  margin:0 auto 30px;
+  border:3px solid var(--gold);
+  border-radius:50% 50% 10px 10px / 60% 60% 10px 10px;
+  background: linear-gradient(135deg, rgba(201,147,58,0.1), rgba(123,79,142,0.1));
+  display:flex; align-items:center; justify-content:center;
+  font-size:80px;
+  box-shadow:0 0 60px rgba(201,147,58,0.3), inset 0 0 30px rgba(201,147,58,0.1);
+  animation: mirrorGlow 2s ease-in-out infinite alternate;
+}
+@keyframes mirrorGlow {
+  from { box-shadow:0 0 40px rgba(201,147,58,0.3); }
+  to   { box-shadow:0 0 80px rgba(201,147,58,0.6), 0 0 120px rgba(123,79,142,0.3); }
+}
+.mirror-text {
+  font-family:'Cinzel Decorative',cursive;
+  font-size:clamp(18px,3vw,28px);
+  color:var(--gold-light);
+  line-height:1.5;
+  margin-bottom:16px;
+}
+.mirror-sub {
+  font-size:16px;
+  font-style:italic;
+  color:rgba(242,232,213,0.7);
+}
+
+/* ─── TAGLINE ─── */
+#tagline {
+  padding:100px 30px;
+  text-align:center;
+  background:linear-gradient(135deg, rgba(123,79,142,0.15), rgba(44,24,16,0.9), rgba(201,147,58,0.08));
+  border-top:1px solid rgba(201,147,58,0.2);
+  position:relative;
+  overflow:hidden;
+}
+#tagline::before {
+  content:'✦';
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  font-size:400px;
+  color:rgba(201,147,58,0.03);
+  pointer-events:none;
+  animation:rotateSlow 30s linear infinite;
+}
+@keyframes rotateSlow { to{transform:translate(-50%,-50%) rotate(360deg);} }
+
+.tagline-main {
+  font-family:'Cinzel Decorative',cursive;
+  font-size:clamp(22px,4vw,44px);
+  color:var(--gold-light);
+  line-height:1.5;
+  max-width:700px;
+  margin:0 auto 24px;
+  position:relative;
+  z-index:1;
+  text-shadow:0 0 60px rgba(201,147,58,0.3);
+}
+.tagline-from {
+  font-size:15px;
+  font-style:italic;
+  color:rgba(242,232,213,0.5);
+  letter-spacing:2px;
+  position:relative; z-index:1;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  padding:50px 30px;
+  text-align:center;
+  border-top:1px solid rgba(201,147,58,0.15);
+}
+.footer-brand {
+  font-family:'Cinzel Decorative',cursive;
+  font-size:18px;
+  color:var(--gold);
+  margin-bottom:12px;
+  letter-spacing:3px;
+}
+.footer-sub {
+  font-size:12px;
+  letter-spacing:3px;
+  color:rgba(242,232,213,0.35);
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from{opacity:0;transform:translateY(24px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes fadeIn {
+  from{opacity:0;}
+  to{opacity:1;}
+}
+@keyframes floatItem {
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-8px);}
+}
+
+/* ─── REVEAL ─── */
+.reveal {
+  opacity:0; transform:translateY(40px);
+  transition:opacity 0.9s ease, transform 0.9s ease;
+}
+.reveal.visible { opacity:1; transform:translateY(0); }
+.reveal-delay-1 { transition-delay:0.15s; }
+.reveal-delay-2 { transition-delay:0.3s; }
+.reveal-delay-3 { transition-delay:0.45s; }
+.reveal-delay-4 { transition-delay:0.6s; }
+
+/* ─── DIVIDER ─── */
+.divider {
+  display:flex; align-items:center; gap:20px;
+  padding:10px 60px;
+  max-width:700px; margin:0 auto;
+}
+.div-line {
+  flex:1; height:1px;
+  background:linear-gradient(to right, transparent, rgba(201,147,58,0.3), transparent);
+}
+.div-sym { color:rgba(201,147,58,0.5); font-size:16px; }
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:600px){
+  nav { padding:14px 20px; }
+  .nav-links { display:none; }
+  .ep { flex-direction:column; gap:10px; }
+  .ep-num { font-size:36px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Particles -->
+<div id="particles"></div>
+
+<!-- Custom cursor -->
+<div id="cursor">
+  <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="4" fill="none" stroke="#C9933A" stroke-width="1.5"/><circle cx="10" cy="10" r="1.5" fill="#C9933A"/></svg>
+</div>
+<div id="cursor-trail"></div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-brand">🌿 Будячок-Святий</div>
+  <ul class="nav-links">
+    <li><a href="#synopsis">Про що</a></li>
+    <li><a href="#characters">Герої</a></li>
+    <li><a href="#episodes">Серії</a></li>
+    <li><a href="#grace-reveal">Благодать</a></li>
+  </ul>
+</nav>
+
+<!-- Music btn -->
+<button id="music-btn" title="Музика">♪</button>
+
+<!-- ════ HERO ════ -->
+<section id="hero">
+  <!-- Background thistles -->
+  <svg class="hero-thistle" width="80" height="200" viewBox="0 0 80 200">
+    <path d="M40 200 Q38 150 35 100 Q32 60 30 30" stroke="#4A7C3F" stroke-width="2" fill="none"/>
+    <circle cx="30" cy="22" r="14" fill="#7B4F8E" opacity="0.6"/>
+    <circle cx="30" cy="22" r="10" fill="#9B6AB0" opacity="0.5"/>
+  </svg>
+  <svg class="hero-thistle" width="80" height="200" viewBox="0 0 80 200">
+    <path d="M40 200 Q42 150 45 100 Q48 60 50 30" stroke="#4A7C3F" stroke-width="2" fill="none"/>
+    <circle cx="50" cy="22" r="14" fill="#7B4F8E" opacity="0.6"/>
+    <circle cx="50" cy="22" r="10" fill="#9B6AB0" opacity="0.5"/>
+  </svg>
+  <svg class="hero-thistle" width="60" height="160" viewBox="0 0 60 160" style="opacity:0.15">
+    <path d="M30 160 Q28 120 25 80 Q23 50 22 20" stroke="#4A7C3F" stroke-width="2" fill="none"/>
+    <circle cx="22" cy="12" r="12" fill="#7B4F8E"/>
+  </svg>
+  <svg class="hero-thistle" width="60" height="160" viewBox="0 0 60 160" style="opacity:0.15">
+    <path d="M30 160 Q32 120 35 80 Q37 50 38 20" stroke="#4A7C3F" stroke-width="2" fill="none"/>
+    <circle cx="38" cy="12" r="12" fill="#7B4F8E"/>
+  </svg>
+
+  <p class="hero-eyebrow">✦ Концепт мультфільму ✦</p>
+
+  <!-- Main SVG hero character -->
+  <div class="saint-wrapper">
+    <svg viewBox="0 0 280 320" width="280" height="320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#F0D070"/>
+          <stop offset="55%" stop-color="#C9933A"/>
+          <stop offset="100%" stop-color="rgba(201,147,58,0.1)"/>
+        </radialGradient>
+        <radialGradient id="skinGrad" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="#E8B88A"/>
+          <stop offset="100%" stop-color="#C48A5C"/>
+        </radialGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="haloGlowF">
+          <feGaussianBlur stdDeviation="8" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <animateTransform/>
+      </defs>
+
+      <!-- Halo glow -->
+      <circle cx="140" cy="118" r="88" fill="rgba(201,147,58,0.15)" filter="url(#haloGlowF)"/>
+      <!-- Halo -->
+      <circle cx="140" cy="118" r="80" fill="url(#halo)"/>
+      <circle cx="140" cy="118" r="80" fill="none" stroke="#C9933A" stroke-width="1.5" opacity="0.7"/>
+      <!-- Halo cross -->
+      <line x1="75" y1="118" x2="205" y2="118" stroke="#C9933A" stroke-width="0.8" opacity="0.5"/>
+      <line x1="140" y1="53"  x2="140" y2="183" stroke="#C9933A" stroke-width="0.8" opacity="0.5"/>
+      <!-- ΩΝ text -->
+      <text x="118" y="126" font-size="16" font-family="serif" fill="#8B6020" opacity="0.7">ω</text>
+      <text x="148" y="126" font-size="16" font-family="serif" fill="#8B6020" opacity="0.7">Ν</text>
+
+      <!-- Body - blue robe -->
+      <ellipse cx="140" cy="270" rx="65" ry="55" fill="#2B4F8A"/>
+      <path d="M85 235 Q95 210 110 215 L108 310 Q95 315 82 295 Z" fill="#3A6AAF"/>
+      <path d="M195 235 Q185 210 170 215 L172 310 Q185 315 198 295 Z" fill="#1E3A6E"/>
+      <!-- Robe folds -->
+      <path d="M110 215 L108 290 M120 212 L118 290 M160 215 L162 290" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+
+      <!-- Red inner robe -->
+      <path d="M118 205 Q140 196 162 205 L165 305 Q140 312 115 305 Z" fill="#9B2335"/>
+      <path d="M128 205 L126 295 M140 200 L140 298 M152 205 L154 295" stroke="#7A1A28" stroke-width="1" opacity="0.4"/>
+
+      <!-- Head -->
+      <ellipse cx="140" cy="118" rx="36" ry="40" fill="url(#skinGrad)"/>
+
+      <!-- Hair - dark curly -->
+      <path d="M104 115 Q100 85 112 72 Q122 60 140 57 Q158 60 168 72 Q180 85 176 115 Q168 98 162 92 Q151 85 140 88 Q129 85 118 92 Q112 98 104 115Z" fill="#4A2010"/>
+      <!-- Hair curls left -->
+      <path d="M104 115 Q97 128 98 146 Q100 155 108 152" stroke="#4A2010" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M97 122 Q90 136 93 152" stroke="#4A2010" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <!-- Hair curls right -->
+      <path d="M176 115 Q183 128 182 146 Q180 155 172 152" stroke="#4A2010" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M183 122 Q190 136 187 152" stroke="#4A2010" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+      <!-- Eyes -->
+      <ellipse cx="128" cy="114" rx="5" ry="5.5" fill="#3A1808"/>
+      <ellipse cx="152" cy="114" rx="5" ry="5.5" fill="#3A1808"/>
+      <ellipse cx="127" cy="113" rx="2" ry="2.2" fill="white"/>
+      <ellipse cx="151" cy="113" rx="2" ry="2.2" fill="white"/>
+      <ellipse cx="127.5" cy="113.5" rx="0.8" ry="0.8" fill="#1a0a00"/>
+      <ellipse cx="151.5" cy="113.5" rx="0.8" ry="0.8" fill="#1a0a00"/>
+
+      <!-- Eyebrows -->
+      <path d="M122 107 Q128 104 134 107" stroke="#4A2010" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <path d="M146 107 Q152 104 158 107" stroke="#4A2010" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+      <!-- Nose -->
+      <path d="M137 120 Q140 128 143 120" stroke="#A07040" stroke-width="1.3" fill="none"/>
+
+      <!-- Mouth -->
+      <path d="M131 134 Q140 139 149 134" stroke="#8B4513" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+      <!-- Neck -->
+      <rect x="132" y="152" width="16" height="18" fill="#C48A5C" rx="2"/>
+
+      <!-- THISTLE CROWN -->
+      <!-- Stems -->
+      <path d="M140 75 L140 52" stroke="#4A7C3F" stroke-width="2"/>
+      <path d="M140 65 L128 50" stroke="#4A7C3F" stroke-width="1.5"/>
+      <path d="M140 65 L152 50" stroke="#4A7C3F" stroke-width="1.5"/>
+      <path d="M128 58 L118 44" stroke="#4A7C3F" stroke-width="1.2"/>
+      <path d="M152 58 L162 44" stroke="#4A7C3F" stroke-width="1.2"/>
+      <!-- Thistle buds -->
+      <circle cx="140" cy="45" r="11" fill="#7B4F8E"/>
+      <circle cx="128" cy="43" r="9" fill="#6B3F7E" opacity="0.9"/>
+      <circle cx="152" cy="43" r="9" fill="#6B3F7E" opacity="0.9"/>
+      <circle cx="118" cy="37" r="7" fill="#5B2F6E" opacity="0.8"/>
+      <circle cx="162" cy="37" r="7" fill="#5B2F6E" opacity="0.8"/>
+      <!-- Bloom tips -->
+      <circle cx="140" cy="38" r="6" fill="#C480D8" opacity="0.7"/>
+      <circle cx="128" cy="37" r="5" fill="#B470C8" opacity="0.6"/>
+      <circle cx="152" cy="37" r="5" fill="#B470C8" opacity="0.6"/>
+      <!-- Spikes on buds -->
+      <line x1="140" y1="34" x2="140" y2="26" stroke="#4A7C3F" stroke-width="1"/>
+      <line x1="134" y1="36" x2="130" y2="28" stroke="#4A7C3F" stroke-width="1"/>
+      <line x1="146" y1="36" x2="150" y2="28" stroke="#4A7C3F" stroke-width="1"/>
+
+      <!-- Beetle on thistle -->
+      <ellipse cx="156" cy="38" rx="7" ry="5.5" fill="#111"/>
+      <ellipse cx="153" cy="36" rx="3" ry="2.5" fill="#222"/>
+      <ellipse cx="159" cy="36" rx="3" ry="2.5" fill="#222"/>
+      <circle cx="152" cy="34.5" r="1.2" fill="white"/>
+      <circle cx="160" cy="34.5" r="1.2" fill="white"/>
+      <line x1="155" y1="40" x2="153" y2="46" stroke="#111" stroke-width="0.8"/>
+      <line x1="157" y1="40" x2="157" y2="46" stroke="#111" stroke-width="0.8"/>
+      <line x1="159" y1="40" x2="161" y2="46" stroke="#111" stroke-width="0.8"/>
+
+      <!-- Left hand gesture (blessing) -->
+      <path d="M112 220 Q108 240 110 255 Q112 265 118 262" stroke="#C48A5C" stroke-width="10" fill="none" stroke-linecap="round"/>
+      <!-- Fingers -->
+      <line x1="110" y1="255" x2="106" y2="268" stroke="#C48A5C" stroke-width="5" stroke-linecap="round"/>
+      <line x1="114" y1="258" x2="110" y2="272" stroke="#C48A5C" stroke-width="5" stroke-linecap="round"/>
+
+      <!-- Grace box (right hand) -->
+      <rect x="155" y="230" rx="4" ry="4" width="52" height="46" fill="#E8A0B8"/>
+      <rect x="155" y="230" rx="4" ry="4" width="52" height="46" fill="none" stroke="#C07890" stroke-width="1.5"/>
+      <!-- Box lid highlight -->
+      <rect x="155" y="230" rx="4" ry="4" width="52" height="14" fill="rgba(255,200,210,0.3)"/>
+      <!-- Ribbon -->
+      <line x1="181" y1="230" x2="181" y2="276" stroke="#C07890" stroke-width="2.5"/>
+      <line x1="155" y1="253" x2="207" y2="253" stroke="#C07890" stroke-width="2.5"/>
+      <!-- Hearts -->
+      <text x="162" y="248" font-size="9" fill="#C07890">♥</text>
+      <text x="185" y="248" font-size="9" fill="#C07890">♥</text>
+      <text x="162" y="270" font-size="9" fill="#C07890">♥</text>
+      <text x="185" y="270" font-size="9" fill="#C07890">♥</text>
+      <!-- Gold center clasp -->
+      <rect x="174" y="246" width="14" height="14" rx="2" fill="#C9933A" opacity="0.8"/>
+      <text x="178" y="257" font-size="8" fill="#8B5A00">✦</text>
+
+      <!-- Thistle side left -->
+      <path d="M50 310 Q52 270 55 230 Q58 195 62 165" stroke="#4A7C3F" stroke-width="2" fill="none"/>
+      <circle cx="62" cy="155" r="13" fill="#7B4F8E" opacity="0.7"/>
+      <circle cx="62" cy="148" r="8" fill="#B480CC" opacity="0.6"/>
+      <!-- Thistle side right -->
+      <path d="M240 315 Q237 274 233 234 Q229 198 226 168" stroke="#4A7C3F" stroke-width="2" fill="none"/>
+      <circle cx="226" cy="158" r="13" fill="#7B4F8E" opacity="0.7"/>
+      <circle cx="226" cy="151" r="8" fill="#B480CC" opacity="0.6"/>
+
+      <!-- ĪС / ХС -->
+      <text x="68" y="80" font-family="serif" font-size="14" fill="#C9933A" opacity="0.7">ĪС</text>
+      <text x="190" y="80" font-family="serif" font-size="14" fill="#C9933A" opacity="0.7">ХС</text>
+    </svg>
+  </div>
+
+  <h1 class="hero-title">Будячок-Святий</h1>
+  <p class="hero-sub">Мультфільм про Благодать</p>
+
+  <blockquote class="hero-quote">
+    "Не вважай нечистим те, що Бог очистив."
+    <br><small style="color:var(--gold);font-style:normal;font-size:11px;letter-spacing:2px;">— Діяння 10:15</small>
+  </blockquote>
+
+  <div class="scroll-cta">
+    <span>Гортайте</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ════ SYNOPSIS ════ -->
+<section id="synopsis">
+  <div class="section-inner">
+    <p class="section-label reveal">Синопсис</p>
+    <h2 class="section-title reveal reveal-delay-1">Про що мультфільм</h2>
+
+    <div class="synopsis-cols">
+      <div class="synopsis-text reveal reveal-delay-2">
+        У світі, де живуть лише страх і провина, з'являється незвичайний герой —
+        <em>Будячок-Святий</em>. Він виріс серед колючок, але ніс у собі квітку.<br><br>
+        Його вважають занадто простим. Занадто дивним. Але він тримає у руках
+        <em>Коробочку Благодаті</em> — і кожен, хто її відкриває, знаходить не нагороду,
+        а дзеркало. І в тому дзеркалі — себе улюбленим.<br><br>
+        Це мультфільм не про закон. Це мультфільм про те, як
+        <em>любов змінює людей</em> — коли жодне правило не може.
+      </div>
+      <div class="synopsis-visual reveal reveal-delay-3">
+        <div class="grace-box">
+          <span class="grace-box-icon">🌸</span>
+          <div class="grace-box-title">Колючки → Квіти</div>
+          <div class="grace-box-sub">Страждання стає красою</div>
+        </div>
+        <div class="grace-box">
+          <span class="grace-box-icon" style="animation-delay:1s">📦</span>
+          <div class="grace-box-title">Коробочка Благодаті</div>
+          <div class="grace-box-sub">Всередині — дзеркало прийняття</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider reveal"><div class="div-line"></div><span class="div-sym">🌿</span><div class="div-line"></div></div>
+
+<!-- ════ CHARACTERS ════ -->
+<section id="characters">
+  <div class="section-inner">
+    <p class="section-label reveal">Персонажі</p>
+    <h2 class="section-title reveal reveal-delay-1">Герої Мультфільму</h2>
+
+    <div class="chars-grid">
+      <div class="char-card hero-char reveal reveal-delay-1">
+        <div class="char-bg-text">Б</div>
+        <span class="char-emoji">🌸</span>
+        <div class="char-name">Будячок-Святий</div>
+        <div class="char-role">Головний герой</div>
+        <p class="char-desc">Носій благодаті. Виріс серед колючок, але ніс у серці квітку любові. Тримає Коробочку Благодаті.</p>
+      </div>
+      <div class="char-card hope-char reveal reveal-delay-2">
+        <div class="char-bg-text">Н</div>
+        <span class="char-emoji">🌱</span>
+        <div class="char-name">Дівчинка Надія</div>
+        <div class="char-role">Перша послідовниця</div>
+        <p class="char-desc">Перша, хто зупинився. Її серце було відкрите, бо вже було зранене. Символ початку перетворення.</p>
+      </div>
+      <div class="char-card villain-char reveal reveal-delay-3">
+        <div class="char-bg-text">П</div>
+        <span class="char-emoji">📜</span>
+        <div class="char-name">Старий Проповідник</div>
+        <div class="char-role" style="color:rgba(242,232,213,0.4)">Антагоніст</div>
+        <p class="char-desc">Живе у світі правил і покарань. Каже людям, що вони ніколи не будуть достатньо хорошими.</p>
+      </div>
+      <div class="char-card beetle-char reveal reveal-delay-4">
+        <div class="char-bg-text">Ж</div>
+        <span class="char-emoji">🪲</span>
+        <div class="char-name">Чорний Жук Осуду</div>
+        <div class="char-role" style="color:rgba(242,232,213,0.4)">Темний голос</div>
+        <p class="char-desc">Шепоче людям про їхні гріхи. Малий, але отруйний. Зникає лише тоді, коли людина приймає благодать.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider reveal"><div class="div-line"></div><span class="div-sym">✦</span><div class="div-line"></div></div>
+
+<!-- ════ EPISODES ════ -->
+<section id="episodes">
+  <div class="section-inner">
+    <p class="section-label reveal">Серії</p>
+    <h2 class="section-title reveal reveal-delay-1">Чотири Серії</h2>
+
+    <div class="episodes-list">
+      <div class="ep reveal reveal-delay-1">
+        <div class="ep-num">01</div>
+        <div class="ep-body">
+          <span class="ep-icon">🌑</span>
+          <div class="ep-title">Будячок знаходить Коробочку Благодаті</div>
+          <p class="ep-desc">Серед руїн і колючок Будячок знаходить скриньку, вкриту серцями і золотом. Вона тепла на дотик. Він іще не знає, що в ній — але вже не може йти без неї.</p>
+          <span class="ep-tag">Відкриття</span>
+        </div>
+      </div>
+      <div class="ep reveal reveal-delay-2">
+        <div class="ep-num">02</div>
+        <div class="ep-body">
+          <span class="ep-icon">🏙️</span>
+          <div class="ep-title">Будячок зустрічає людей страху</div>
+          <p class="ep-desc">Він входить у Місто Тіней. Люди втікають. Жук Осуду шепоче: "Ти занадто колючий. Ти не достатній." Але одна дівчинка зупиняється — і дивиться йому в очі.</p>
+          <span class="ep-tag">Зустріч</span>
+        </div>
+      </div>
+      <div class="ep reveal reveal-delay-3">
+        <div class="ep-num">03</div>
+        <div class="ep-body">
+          <span class="ep-icon">🌿</span>
+          <div class="ep-title">Будячок садить Поле Благодаті</div>
+          <p class="ep-desc">Там, де він пройшов, виростають будяки — але вони квітнуть. Навіть колючки стають красивими, коли в них є любов. Місто починає змінюватися.</p>
+          <span class="ep-tag">Перетворення</span>
+        </div>
+      </div>
+      <div class="ep reveal reveal-delay-4">
+        <div class="ep-num">04</div>
+        <div class="ep-body">
+          <span class="ep-icon">✨</span>
+          <div class="ep-title">Люди починають цвісти</div>
+          <p class="ep-desc">Коробочку відкривають. Всередині — не закон, не нагорода, не правила. Всередині — дзеркало. І кожен бачить себе у ньому — улюбленим.</p>
+          <span class="ep-tag">Благодать</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider reveal"><div class="div-line"></div><span class="div-sym">🌿</span><div class="div-line"></div></div>
+
+<!-- ════ SYMBOLISM ════ -->
+<section id="symbolism">
+  <div class="section-inner">
+    <p class="section-label reveal">Символіка</p>
+    <h2 class="section-title reveal reveal-delay-1">Мова Образів</h2>
+
+    <div class="sym-grid">
+      <div class="sym-card reveal reveal-delay-1">
+        <div class="sym-icon">🌸</div>
+        <div class="sym-name">Будяк</div>
+        <div style="font-size:14px;margin-bottom:8px;"><span style="color:rgba(242,232,213,0.5)">Колючки</span><span class="sym-arrow">→</span><span class="sym-meaning">Сила і страждання</span></div>
+        <p class="sym-desc">Той, хто виріс серед труднощів — але розцвів. Символ Шотландії, символ виживання і краси.</p>
+      </div>
+      <div class="sym-card reveal reveal-delay-2">
+        <div class="sym-icon">📦</div>
+        <div class="sym-name">Коробочка Благодаті</div>
+        <div style="font-size:14px;margin-bottom:8px;"><span style="color:rgba(242,232,213,0.5)">Скринька</span><span class="sym-arrow">→</span><span class="sym-meaning">Незаслужена любов</span></div>
+        <p class="sym-desc">Подарунок, який неможливо заробити. Всередині — не нагорода, а дзеркало безумовного прийняття.</p>
+      </div>
+      <div class="sym-card reveal reveal-delay-3">
+        <div class="sym-icon">🪲</div>
+        <div class="sym-name">Чорний Жук</div>
+        <div style="font-size:14px;margin-bottom:8px;"><span style="color:rgba(242,232,213,0.5)">Шепіт</span><span class="sym-arrow">→</span><span class="sym-meaning">Голос осуду</span></div>
+        <p class="sym-desc">Малий, але настирливий. Сидить на плечі. Зникає лише коли людина чує голос любові голосніше.</p>
+      </div>
+      <div class="sym-card reveal reveal-delay-4">
+        <div class="sym-icon">✨</div>
+        <div class="sym-name">Золотий Ореол</div>
+        <div style="font-size:14px;margin-bottom:8px;"><span style="color:rgba(242,232,213,0.5)">Золото</span><span class="sym-arrow">→</span><span class="sym-meaning">Вічна гідність</span></div>
+        <p class="sym-desc">Не як нагорода за вчинки. Як нагадування — ти вже є золото. Ще до того, як щось зробив.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ GRACE REVEAL ════ -->
+<section id="grace-reveal">
+  <div class="grace-scene">
+    <p class="section-label reveal" style="margin-bottom:16px">Серце мультфільму</p>
+    <div class="grace-cta reveal reveal-delay-1">Що всередині Коробочки?</div>
+
+    <div class="magic-box-container reveal reveal-delay-2" id="boxContainer">
+      <div class="box-glow"></div>
+      <div class="magic-box" id="magicBox">
+        <svg class="box-svg" viewBox="0 0 120 120">
+          <rect x="15" y="45" width="90" height="70" rx="6" fill="#E8A0B8" stroke="#C07890" stroke-width="2"/>
+          <rect x="15" y="45" width="90" height="20" rx="4" fill="#F0B8CC" stroke="#C07890" stroke-width="1.5"/>
+          <line x1="60" y1="45" x2="60" y2="115" stroke="#C07890" stroke-width="2.5"/>
+          <line x1="15" y1="80" x2="105" y2="80" stroke="#C07890" stroke-width="2.5"/>
+          <rect x="51" y="71" width="18" height="18" rx="2" fill="#C9933A" opacity="0.9"/>
+          <text x="55" y="84" font-size="12" fill="#8B5A00">✦</text>
+          <text x="26" y="72" font-size="11" fill="#C07890">♥</text>
+          <text x="80" y="72" font-size="11" fill="#C07890">♥</text>
+          <text x="26" y="100" font-size="11" fill="#C07890">♥</text>
+          <text x="80" y="100" font-size="11" fill="#C07890">♥</text>
+          <!-- Glow lines -->
+          <line x1="60" y1="30" x2="60" y2="10" stroke="#C9933A" stroke-width="1.5" opacity="0.6">
+            <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+          </line>
+          <line x1="40" y1="35" x2="28" y2="18" stroke="#C9933A" stroke-width="1" opacity="0.5">
+            <animate attributeName="opacity" values="0.2;0.8;0.2" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+          </line>
+          <line x1="80" y1="35" x2="92" y2="18" stroke="#C9933A" stroke-width="1" opacity="0.5">
+            <animate attributeName="opacity" values="0.2;0.8;0.2" dur="2s" begin="0.6s" repeatCount="indefinite"/>
+          </line>
+        </svg>
+      </div>
+    </div>
+
+    <button class="open-box-btn reveal reveal-delay-3" id="openBoxBtn" onclick="openGraceBox()">
+      ✦ Відкрити Коробочку ✦
+    </button>
+
+    <div class="mirror-reveal" id="mirrorReveal">
+      <div class="mirror-frame">🪞</div>
+      <div class="mirror-text">
+        Ти бачиш себе.<br>
+        І ти — улюблений.
+      </div>
+      <p class="mirror-sub">Це і є благодать — не нагорода, а дзеркало безумовної любові.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════ TAGLINE ════ -->
+<section id="tagline">
+  <div class="tagline-main reveal">
+    "Не закон змінює людей.<br>
+    Любов змінює людей."
+  </div>
+  <p class="tagline-from reveal reveal-delay-1">— Будячок-Святий і Таємниця Благодаті</p>
+</section>
+
+<!-- ════ FOOTER ════ -->
+<footer>
+  <div class="footer-brand">🌿 Будячок-Святий</div>
+  <div class="footer-sub">© Homo Thistlis · Концепт мультфільму · Музика: Web Audio API</div>
+</footer>
+
+<!-- ═══════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════ -->
+<script>
+// ── PARTICLES ──
+const particlesEl = document.getElementById('particles');
+for(let i=0;i<25;i++){
+  const p = document.createElement('div');
+  p.className = 'particle';
+  const size = Math.random()*4+2;
+  p.style.cssText = `
+    width:${size}px; height:${size}px;
+    left:${Math.random()*100}%;
+    animation-duration:${Math.random()*20+15}s;
+    animation-delay:${Math.random()*15}s;
+  `;
+  particlesEl.appendChild(p);
+}
+
+// ── CURSOR ──
+const cursor = document.getElementById('cursor');
+const trailEl = document.getElementById('cursor-trail');
+const trailDots = [];
+const TRAIL_LEN = 8;
+for(let i=0;i<TRAIL_LEN;i++){
+  const d=document.createElement('div');
+  d.className='trail-dot';
+  d.style.opacity = (1 - i/TRAIL_LEN)*0.5;
+  d.style.width = d.style.height = (6 - i*0.5)+'px';
+  trailEl.appendChild(d);
+  trailDots.push({el:d, x:0, y:0});
+}
+let mx=0, my=0;
+document.addEventListener('mousemove', e=>{
+  mx=e.clientX; my=e.clientY;
+  cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+});
+function animTrail(){
+  let px=mx, py=my;
+  trailDots.forEach((d,i)=>{
+    d.x += (px-d.x)*0.35;
+    d.y += (py-d.y)*0.35;
+    d.el.style.left=d.x+'px'; d.el.style.top=d.y+'px';
+    px=d.x; py=d.y;
+  });
+  requestAnimationFrame(animTrail);
+}
+animTrail();
+
+// ── SCROLL REVEAL ──
+const revealEls = document.querySelectorAll('.reveal');
+const revealObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting) e.target.classList.add('visible');
+  });
+},{threshold:0.12});
+revealEls.forEach(el=>revealObs.observe(el));
+
+// ── GRACE BOX ──
+function openGraceBox(){
+  const box=document.getElementById('magicBox');
+  const mirror=document.getElementById('mirrorReveal');
+  const btn=document.getElementById('openBoxBtn');
+  box.classList.toggle('opened');
+  setTimeout(()=>{
+    mirror.classList.add('show');
+    btn.textContent='✦ Благодать відкрита ✦';
+    btn.style.borderColor='var(--thistle-bloom)';
+    btn.style.color='var(--thistle-bloom)';
+    // Spawn hearts
+    spawnHearts();
+    // Play grace chord
+    playGraceChord();
+  },600);
+}
+
+function spawnHearts(){
+  for(let i=0;i<20;i++){
+    setTimeout(()=>{
+      const h=document.createElement('div');
+      h.innerHTML='♥';
+      h.style.cssText=`
+        position:fixed;
+        left:${30+Math.random()*40}%;
+        bottom:30%;
+        font-size:${16+Math.random()*20}px;
+        color:hsl(${280+Math.random()*60},60%,70%);
+        pointer-events:none;
+        z-index:999;
+        animation:heartRise 2s ease forwards;
+      `;
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(),2000);
+    },i*100);
+  }
+}
+
+// Add heart rise keyframes
+const heartStyle=document.createElement('style');
+heartStyle.textContent=`
+@keyframes heartRise{
+  from{transform:translateY(0) scale(0.5);opacity:1;}
+  to{transform:translateY(-200px) scale(1.2);opacity:0;}
+}`;
+document.head.appendChild(heartStyle);
+
+// ── WEB AUDIO MUSIC ──
+let audioCtx=null;
+let isPlaying=false;
+let musicNodes=[];
+let musicInterval=null;
+
+function getAudioCtx(){
+  if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  return audioCtx;
+}
+
+// Pentatonic-ish scale in F major (peaceful, sacred feel)
+const NOTES = [
+  349.23, // F4
+  392.00, // G4
+  440.00, // A4
+  523.25, // C5
+  587.33, // D5
+  698.46, // F5
+  783.99, // G5
+  880.00, // A5
+];
+
+// Chord progressions (indices into NOTES)
+const CHORDS = [
+  [0,2,4],   // F maj
+  [1,3,5],   // G min7 feeling
+  [0,2,5],   // F add9
+  [2,4,6],   // A min
+];
+
+let chordIdx=0;
+let beatCount=0;
+
+function playNote(freq, time, duration, gain=0.12, type='sine'){
+  const ctx=getAudioCtx();
+  const osc=ctx.createOscillator();
+  const gainNode=ctx.createGain();
+  const reverb=ctx.createConvolver();
+
+  osc.connect(gainNode);
+  gainNode.connect(ctx.destination);
+
+  osc.type=type;
+  osc.frequency.setValueAtTime(freq,time);
+  osc.frequency.exponentialRampToValueAtTime(freq*1.002, time+duration*0.5);
+
+  gainNode.gain.setValueAtTime(0,time);
+  gainNode.gain.linearRampToValueAtTime(gain,time+0.08);
+  gainNode.gain.exponentialRampToValueAtTime(0.001,time+duration);
+
+  osc.start(time);
+  osc.stop(time+duration+0.1);
+  musicNodes.push(osc);
+}
+
+function playMusicBeat(){
+  const ctx=getAudioCtx();
+  const now=ctx.currentTime;
+
+  // Soft bell melody
+  const chord=CHORDS[chordIdx % CHORDS.length];
+  chord.forEach((noteIdx,i)=>{
+    playNote(NOTES[noteIdx], now+i*0.12, 2.0, 0.07, 'sine');
+    // Harmonic overtone
+    playNote(NOTES[noteIdx]*2, now+i*0.12+0.05, 1.5, 0.025, 'triangle');
+  });
+
+  // Occasional melody note
+  if(beatCount % 2 === 0){
+    const melodyNote = NOTES[Math.floor(Math.random()*NOTES.length)];
+    playNote(melodyNote, now+0.5, 1.8, 0.09, 'triangle');
+  }
+
+  // Soft bass drone
+  playNote(NOTES[0]*0.25, now, 3.5, 0.04, 'sine');
+
+  chordIdx++;
+  beatCount++;
+}
+
+function startMusic(){
+  const ctx=getAudioCtx();
+  if(ctx.state==='suspended') ctx.resume();
+  isPlaying=true;
+  document.getElementById('music-btn').textContent='♫';
+  document.getElementById('music-btn').classList.add('playing');
+  playMusicBeat();
+  musicInterval=setInterval(playMusicBeat,3200);
+}
+
+function stopMusic(){
+  isPlaying=false;
+  if(musicInterval) clearInterval(musicInterval);
+  musicNodes.forEach(n=>{try{n.stop();}catch(e){}});
+  musicNodes=[];
+  document.getElementById('music-btn').textContent='♪';
+  document.getElementById('music-btn').classList.remove('playing');
+}
+
+document.getElementById('music-btn').addEventListener('click',()=>{
+  if(isPlaying) stopMusic(); else startMusic();
+});
+
+function playGraceChord(){
+  const ctx=getAudioCtx();
+  if(ctx.state==='suspended') ctx.resume();
+  const now=ctx.currentTime;
+  // Big lush chord - all notes together
+  NOTES.forEach((f,i)=>{
+    playNote(f, now+i*0.06, 3.5, 0.06, 'sine');
+    playNote(f*0.5, now+i*0.06, 4, 0.03, 'triangle');
+  });
+}
+
+// Auto-start music on first scroll
+let musicAutoStarted=false;
+window.addEventListener('scroll',()=>{
+  if(!musicAutoStarted && window.scrollY>200){
+    musicAutoStarted=true;
+    startMusic();
+  }
+},{once:true});
+</script>
+</body>
+</html>

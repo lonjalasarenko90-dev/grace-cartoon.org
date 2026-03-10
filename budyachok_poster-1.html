@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Будячок-Святий — Плакат</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #0A0604;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 30px 20px;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.poster-wrap {
+  position: relative;
+  width: min(520px, 95vw);
+}
+
+/* Outer ornamental border */
+.poster-outer-border {
+  position: absolute;
+  inset: -18px;
+  border: 1px solid rgba(201,147,58,0.25);
+  pointer-events: none;
+  z-index: 20;
+}
+.poster-outer-border::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(201,147,58,0.12);
+}
+
+/* Corner ornaments */
+.corner {
+  position: absolute;
+  width: 36px; height: 36px;
+  z-index: 21;
+  pointer-events: none;
+}
+.corner svg { width:100%; height:100%; }
+.corner-tl { top:-18px; left:-18px; }
+.corner-tr { top:-18px; right:-18px; transform:scaleX(-1); }
+.corner-bl { bottom:-18px; left:-18px; transform:scaleY(-1); }
+.corner-br { bottom:-18px; right:-18px; transform:scale(-1,-1); }
+
+/* Main poster */
+.poster {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2/3;
+  overflow: hidden;
+  background: #0D0806;
+}
+
+/* ── SKY / BACKGROUND LAYERS ── */
+.bg-sky {
+  position: absolute; inset: 0;
+  background: 
+    radial-gradient(ellipse at 50% -10%, rgba(201,147,58,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 20% 60%, rgba(123,79,142,0.12) 0%, transparent 45%),
+    radial-gradient(ellipse at 80% 70%, rgba(43,79,138,0.10) 0%, transparent 40%),
+    linear-gradient(180deg, #120A04 0%, #1E0E06 30%, #0A0604 60%, #06030A 100%);
+}
+
+/* Stars */
+.stars {
+  position: absolute; inset: 0; pointer-events: none;
+}
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle linear infinite;
+}
+@keyframes twinkle {
+  0%,100%{ opacity:0.2; transform:scale(0.8); }
+  50%    { opacity:0.9; transform:scale(1.2); }
+}
+
+/* Ground mist */
+.ground-mist {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 35%;
+  background: linear-gradient(to top, rgba(10,6,4,0.95), transparent);
+  z-index: 2;
+}
+
+/* City silhouette */
+.city-layer {
+  position: absolute;
+  bottom: 16%;
+  left: 0; right: 0;
+  height: 20%;
+  z-index: 3;
+}
+
+/* Thistle field bottom */
+.thistle-field {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 20%;
+  z-index: 4;
+}
+
+/* ── CHARACTERS ── */
+.characters-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
+
+/* ── TITLE AREA ── */
+.title-area {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  z-index: 15;
+  padding: 0 30px 28px;
+  background: linear-gradient(to top, rgba(6,3,10,0.98) 40%, transparent);
+  text-align: center;
+}
+
+.title-ic-xc {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 8px;
+}
+.ic-xc {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: 11px;
+  color: rgba(201,147,58,0.6);
+  letter-spacing: 3px;
+  border-bottom: 1px solid rgba(201,147,58,0.3);
+  padding-bottom: 2px;
+}
+
+.title-ornament {
+  display: flex; align-items: center; gap: 12px;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+.orn-line { flex:1; height:1px; background:linear-gradient(to right,transparent,rgba(201,147,58,0.4),transparent); max-width:60px; }
+.orn-sym  { color:rgba(201,147,58,0.6); font-size:12px; }
+
+.title-main {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: clamp(22px, 5.5vw, 34px);
+  font-weight: 900;
+  color: #E8C46A;
+  line-height: 1.15;
+  text-shadow:
+    0 0 30px rgba(201,147,58,0.5),
+    0 0 80px rgba(201,147,58,0.2);
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+}
+
+.title-and {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(12px,2.5vw,15px);
+  font-style: italic;
+  color: rgba(201,147,58,0.5);
+  letter-spacing: 4px;
+  margin-bottom: 2px;
+}
+
+.title-sub {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: clamp(13px,3vw,18px);
+  color: rgba(196,154,216,0.85);
+  letter-spacing: 2px;
+  text-shadow: 0 0 20px rgba(123,79,142,0.5);
+  margin-bottom: 16px;
+}
+
+.title-divider {
+  width: 80px; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(201,147,58,0.5), transparent);
+  margin: 8px auto;
+}
+
+.title-tagline {
+  font-size: clamp(11px,2vw,13px);
+  font-style: italic;
+  color: rgba(244,235,216,0.4);
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+}
+
+.title-credits {
+  font-size: 9px;
+  letter-spacing: 4px;
+  color: rgba(244,235,216,0.2);
+  text-transform: uppercase;
+}
+
+/* Top header */
+.top-header {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 15;
+  padding: 18px 30px 0;
+  text-align: center;
+  background: linear-gradient(to bottom, rgba(6,3,10,0.8), transparent);
+}
+.top-studio {
+  font-size: 9px; letter-spacing: 5px;
+  color: rgba(201,147,58,0.45);
+  text-transform: uppercase;
+}
+.top-line { width:40px; height:1px; background:rgba(201,147,58,0.2); margin:5px auto; }
+
+/* Halo glow behind main character */
+.halo-glow {
+  position: absolute;
+  width: 52%;
+  padding-bottom: 52%;
+  border-radius: 50%;
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(201,147,58,0.22) 0%, rgba(201,147,58,0.08) 40%, transparent 70%);
+  filter: blur(8px);
+  z-index: 5;
+  animation: haloAnim 4s ease-in-out infinite alternate;
+}
+@keyframes haloAnim {
+  from { opacity:0.7; transform:translateX(-50%) scale(0.95); }
+  to   { opacity:1;   transform:translateX(-50%) scale(1.05); }
+}
+</style>
+</head>
+<body>
+
+<div class="poster-wrap">
+  <!-- Outer border -->
+  <div class="poster-outer-border"></div>
+
+  <!-- Corners -->
+  <div class="corner corner-tl">
+    <svg viewBox="0 0 36 36"><path d="M2 34 L2 2 L34 2" stroke="#C9933A" stroke-width="1" fill="none" opacity="0.5"/><circle cx="2" cy="2" r="2" fill="#C9933A" opacity="0.6"/></svg>
+  </div>
+  <div class="corner corner-tr">
+    <svg viewBox="0 0 36 36"><path d="M2 34 L2 2 L34 2" stroke="#C9933A" stroke-width="1" fill="none" opacity="0.5"/><circle cx="2" cy="2" r="2" fill="#C9933A" opacity="0.6"/></svg>
+  </div>
+  <div class="corner corner-bl">
+    <svg viewBox="0 0 36 36"><path d="M2 34 L2 2 L34 2" stroke="#C9933A" stroke-width="1" fill="none" opacity="0.5"/><circle cx="2" cy="2" r="2" fill="#C9933A" opacity="0.6"/></svg>
+  </div>
+  <div class="corner corner-br">
+    <svg viewBox="0 0 36 36"><path d="M2 34 L2 2 L34 2" stroke="#C9933A" stroke-width="1" fill="none" opacity="0.5"/><circle cx="2" cy="2" r="2" fill="#C9933A" opacity="0.6"/></svg>
+  </div>
+
+  <div class="poster">
+    <!-- Background -->
+    <div class="bg-sky"></div>
+    <div class="stars" id="starsEl"></div>
+
+    <!-- Top studio label -->
+    <div class="top-header">
+      <div class="top-studio">Homo Thistlis Presents</div>
+      <div class="top-line"></div>
+    </div>
+
+    <!-- Halo glow -->
+    <div class="halo-glow"></div>
+
+    <!-- Ground mist -->
+    <div class="ground-mist"></div>
+
+    <!-- ALL CHARACTERS SVG (full poster composition) -->
+    <div class="characters-layer">
+      <svg width="100%" height="100%" viewBox="0 0 520 780" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Gradients -->
+          <radialGradient id="haloP" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#F8E060"/>
+            <stop offset="50%" stop-color="#C9933A"/>
+            <stop offset="100%" stop-color="rgba(201,147,58,0.05)"/>
+          </radialGradient>
+          <radialGradient id="skinMain" cx="40%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#E8B888"/>
+            <stop offset="100%" stop-color="#C08050"/>
+          </radialGradient>
+          <radialGradient id="skinNadia" cx="40%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#FCD0A0"/>
+            <stop offset="100%" stop-color="#E0A070"/>
+          </radialGradient>
+          <radialGradient id="skinPr" cx="40%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#C0906A"/>
+            <stop offset="100%" stop-color="#906040"/>
+          </radialGradient>
+          <radialGradient id="beetleR" cx="40%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#222"/>
+            <stop offset="100%" stop-color="#060606"/>
+          </radialGradient>
+          <filter id="glow1"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="softS"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="shadowF"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="rgba(0,0,0,0.7)"/></filter>
+        </defs>
+
+        <!-- ══════════════════════════════
+             CITY SILHOUETTE
+        ══════════════════════════════ -->
+        <g opacity="0.4">
+          <!-- Buildings left -->
+          <rect x="0"   y="500" width="35"  height="100" fill="#0E0806"/>
+          <rect x="5"   y="480" width="25"  height="20"  fill="#0E0806"/>
+          <rect x="40"  y="510" width="28"  height="90"  fill="#100A07"/>
+          <rect x="72"  y="495" width="22"  height="105" fill="#0E0806"/>
+          <rect x="98"  y="520" width="18"  height="80"  fill="#0D0705"/>
+          <!-- Buildings right -->
+          <rect x="420" y="500" width="35"  height="100" fill="#0E0806"/>
+          <rect x="450" y="480" width="25"  height="120" fill="#100A07"/>
+          <rect x="458" y="462" width="15"  height="18"  fill="#0E0806"/>
+          <rect x="478" y="508" width="22"  height="92"  fill="#0E0806"/>
+          <rect x="500" y="515" width="20"  height="85"  fill="#0D0705"/>
+          <!-- Windows (tiny glow dots) -->
+          <circle cx="50"  cy="500" r="1.5" fill="rgba(201,147,58,0.3)"/>
+          <circle cx="58"  cy="510" r="1.5" fill="rgba(201,147,58,0.2)"/>
+          <circle cx="80"  cy="508" r="1.5" fill="rgba(201,147,58,0.25)"/>
+          <circle cx="108" cy="530" r="1.5" fill="rgba(201,147,58,0.2)"/>
+          <circle cx="435" cy="510" r="1.5" fill="rgba(201,147,58,0.3)"/>
+          <circle cx="462" cy="490" r="1.5" fill="rgba(201,147,58,0.2)"/>
+          <circle cx="488" cy="522" r="1.5" fill="rgba(201,147,58,0.25)"/>
+          <circle cx="505" cy="530" r="1.5" fill="rgba(201,147,58,0.2)"/>
+        </g>
+
+        <!-- ══════════════════════════════
+             THISTLE FIELD (background)
+        ══════════════════════════════ -->
+        <g opacity="0.35">
+          <!-- Left thistles -->
+          <path d="M60 780 Q62 720 65 660 Q68 610 72 570" stroke="#3A6030" stroke-width="3" fill="none"/>
+          <circle cx="72" cy="558" r="18" fill="#5A3F6E" opacity="0.7"/>
+          <circle cx="72" cy="545" r="11" fill="#8B60A0" opacity="0.6"/>
+
+          <path d="M30 780 Q33 730 37 680 Q41 640 45 608" stroke="#3A6030" stroke-width="2.5" fill="none"/>
+          <circle cx="45" cy="596" r="14" fill="#4E3562" opacity="0.65"/>
+
+          <path d="M110 780 Q112 740 114 700 Q116 668 118 645" stroke="#3A6030" stroke-width="2" fill="none"/>
+          <circle cx="118" cy="634" r="12" fill="#5A3F6E" opacity="0.6"/>
+
+          <!-- Right thistles -->
+          <path d="M460 780 Q458 720 455 660 Q452 610 448 570" stroke="#3A6030" stroke-width="3" fill="none"/>
+          <circle cx="448" cy="558" r="18" fill="#5A3F6E" opacity="0.7"/>
+          <circle cx="448" cy="545" r="11" fill="#8B60A0" opacity="0.6"/>
+
+          <path d="M490 780 Q487 730 483 680 Q479 640 475 608" stroke="#3A6030" stroke-width="2.5" fill="none"/>
+          <circle cx="475" cy="596" r="14" fill="#4E3562" opacity="0.65"/>
+
+          <path d="M420 780 Q418 740 416 700 Q414 668 412 645" stroke="#3A6030" stroke-width="2" fill="none"/>
+          <circle cx="412" cy="634" r="12" fill="#5A3F6E" opacity="0.6"/>
+        </g>
+
+        <!-- ══════════════════════════════
+             ANTAGONIST — PROROK (back left, shadowy)
+        ══════════════════════════════ -->
+        <g opacity="0.55" transform="translate(55, 370) scale(0.62)" filter="url(#shadowF)">
+          <!-- Robe -->
+          <ellipse cx="100" cy="320" rx="68" ry="60" fill="#0D0A06"/>
+          <path d="M38 285 Q48 260 62 265 L60 365Z" fill="#141006"/>
+          <path d="M162 285 Q152 260 138 265 L140 365Z" fill="#080604"/>
+          <!-- White collar small -->
+          <path d="M76 270 Q100 262 124 270 Q116 280 100 282 Q84 280 76 270Z" fill="rgba(180,160,120,0.7)"/>
+          <!-- Head -->
+          <ellipse cx="100" cy="180" rx="38" ry="42" fill="url(#skinPr)"/>
+          <!-- Grey hair -->
+          <path d="M62 178 Q59 148 72 134 Q82 122 100 118 Q118 122 128 134 Q141 148 138 178 Q128 158 120 150 Q110 144 100 146 Q90 144 80 150 Q72 158 62 178Z" fill="#6A5A48"/>
+          <!-- Stern face -->
+          <ellipse cx="86"  cy="176" rx="7" ry="6.5" fill="#1A0A00"/>
+          <ellipse cx="114" cy="176" rx="7" ry="6.5" fill="#1A0A00"/>
+          <path d="M80 168 Q86 164 92 168" stroke="#4A3020" stroke-width="3" fill="none"/>
+          <path d="M108 168 Q114 164 120 168" stroke="#4A3020" stroke-width="3" fill="none"/>
+          <path d="M85 202 Q100 198 115 202" stroke="#7A4520" stroke-width="2" fill="none"/>
+          <!-- Beard -->
+          <path d="M74 206 Q78 230 100 240 Q122 230 126 206 Q114 218 100 220 Q86 218 74 206Z" fill="#6A5A48"/>
+          <!-- Scroll -->
+          <rect x="128" y="268" width="48" height="65" rx="4" fill="#F0E8D0" opacity="0.8"/>
+          <!-- Pointing hand -->
+          <path d="M60 275 Q50 295 46 310" stroke="#906040" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <path d="M46 310 L36 304" stroke="#906040" stroke-width="5" fill="none" stroke-linecap="round"/>
+        </g>
+
+        <!-- ══════════════════════════════
+             NADIYA — right side, slightly behind
+        ══════════════════════════════ -->
+        <g transform="translate(308, 330) scale(0.72)" filter="url(#shadowF)">
+          <!-- Dress -->
+          <ellipse cx="100" cy="300" rx="58" ry="56" fill="#4A7842"/>
+          <path d="M48 268 Q58 246 72 250 L70 340Z" fill="#5A8850"/>
+          <path d="M152 268 Q142 246 128 250 L130 340Z" fill="#3A6832"/>
+          <!-- Hair braids -->
+          <path d="M70 148 Q66 120 76 106 Q84 94 100 90 Q116 94 124 106 Q134 120 130 148 Q122 130 114 124 Q107 118 100 120 Q93 118 86 124 Q78 130 70 148Z" fill="#7B3D18"/>
+          <path d="M70 148 Q58 166 54 194 Q52 210 56 228" stroke="#7B3D18" stroke-width="13" fill="none" stroke-linecap="round"/>
+          <path d="M130 148 Q142 166 146 194 Q148 210 144 228" stroke="#7B3D18" stroke-width="13" fill="none" stroke-linecap="round"/>
+          <!-- Flower in hair -->
+          <circle cx="72" cy="108" r="9" fill="#7B4F8E" opacity="0.85"/>
+          <circle cx="72" cy="108" r="5" fill="#C480D8" opacity="0.75"/>
+          <!-- Head -->
+          <ellipse cx="100" cy="140" rx="32" ry="36" fill="url(#skinNadia)"/>
+          <!-- Big eyes -->
+          <ellipse cx="86"  cy="138" rx="6.5" ry="7.5" fill="#2A1008"/>
+          <ellipse cx="114" cy="138" rx="6.5" ry="7.5" fill="#2A1008"/>
+          <ellipse cx="84"  cy="136" rx="3"   ry="3.5" fill="white"/>
+          <ellipse cx="112" cy="136" rx="3"   ry="3.5" fill="white"/>
+          <!-- Rosy cheeks -->
+          <ellipse cx="76"  cy="150" rx="10" ry="6" fill="rgba(240,130,100,0.25)"/>
+          <ellipse cx="124" cy="150" rx="10" ry="6" fill="rgba(240,130,100,0.25)"/>
+          <!-- Smile -->
+          <path d="M88 162 Q100 170 112 162" stroke="#9B5020" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <!-- Small thistle -->
+          <path d="M142 256 Q144 236 146 216" stroke="#4A7C3F" stroke-width="2.5" fill="none"/>
+          <circle cx="146" cy="206" r="12" fill="#7B4F8E" opacity="0.8"/>
+          <circle cx="146" cy="197" r="7" fill="#C480D8" opacity="0.65"/>
+        </g>
+
+        <!-- ══════════════════════════════
+             ЖУК — tiny, lurking in shadow top-right
+        ══════════════════════════════ -->
+        <g transform="translate(378, 80) scale(0.28)" opacity="0.75">
+          <ellipse cx="100" cy="160" rx="65" ry="80" fill="url(#beetleR)"/>
+          <path d="M100 85 L100 238" stroke="rgba(50,50,50,0.8)" stroke-width="2"/>
+          <ellipse cx="100" cy="100" rx="38" ry="26" fill="#141414"/>
+          <ellipse cx="100" cy="82" rx="32" ry="26" fill="#0E0E0E"/>
+          <!-- Eyes red glow -->
+          <ellipse cx="82" cy="80" rx="13" ry="15" fill="#330000"/>
+          <ellipse cx="118" cy="80" rx="13" ry="15" fill="#330000"/>
+          <ellipse cx="82" cy="80" rx="8" ry="10" fill="#880000"/>
+          <ellipse cx="118" cy="80" rx="8" ry="10" fill="#880000"/>
+          <ellipse cx="82" cy="80" rx="4" ry="5" fill="#DD0000"/>
+          <ellipse cx="118" cy="80" rx="4" ry="5" fill="#DD0000"/>
+          <ellipse cx="82" cy="80" rx="14" ry="16" fill="none" stroke="rgba(220,0,0,0.25)" stroke-width="4"/>
+          <ellipse cx="118" cy="80" rx="14" ry="16" fill="none" stroke="rgba(220,0,0,0.25)" stroke-width="4"/>
+          <!-- Antennae -->
+          <path d="M86 58 Q74 38 62 22" stroke="#222" stroke-width="2.5" fill="none"/>
+          <circle cx="60" cy="19" r="5" fill="#1A1A1A"/>
+          <path d="M114 58 Q126 38 138 22" stroke="#222" stroke-width="2.5" fill="none"/>
+          <circle cx="140" cy="19" r="5" fill="#1A1A1A"/>
+          <!-- Legs -->
+          <path d="M42 130 Q24 124 10 132" stroke="#181818" stroke-width="4" fill="none"/>
+          <path d="M40 155 Q22 155 8 165" stroke="#181818" stroke-width="4" fill="none"/>
+          <path d="M158 130 Q176 124 190 132" stroke="#181818" stroke-width="4" fill="none"/>
+          <path d="M160 155 Q178 155 192 165" stroke="#181818" stroke-width="4" fill="none"/>
+          <!-- Whisper -->
+          <ellipse cx="42" cy="48" rx="34" ry="18" fill="rgba(15,8,4,0.85)" stroke="rgba(100,20,0,0.3)" stroke-width="1"/>
+          <text x="20" y="54" font-size="11" font-style="italic" fill="rgba(200,60,60,0.7)" font-family="serif">недостатній…</text>
+        </g>
+
+        <!-- ══════════════════════════════
+             MAIN CHARACTER — BUDYACHOK (center, large)
+        ══════════════════════════════ -->
+        <g transform="translate(105, 60) scale(1.0)" filter="url(#shadowF)">
+          <!-- BIG HALO GLOW -->
+          <circle cx="205" cy="200" r="145" fill="rgba(201,147,58,0.08)" filter="url(#softS)"/>
+          <circle cx="205" cy="200" r="130" fill="rgba(201,147,58,0.05)" filter="url(#softS)"/>
+
+          <!-- HALO -->
+          <circle cx="205" cy="200" r="115" fill="url(#haloP)"/>
+          <circle cx="205" cy="200" r="115" fill="none" stroke="#C9933A" stroke-width="2" opacity="0.65"/>
+          <circle cx="205" cy="200" r="108" fill="none" stroke="rgba(201,147,58,0.3)" stroke-width="0.8"/>
+          <!-- Halo cross lines -->
+          <line x1="90"  y1="200" x2="320" y2="200" stroke="#C9933A" stroke-width="1" opacity="0.4"/>
+          <line x1="205" y1="85"  x2="205" y2="315" stroke="#C9933A" stroke-width="1" opacity="0.4"/>
+          <!-- Halo inner circle segments -->
+          <circle cx="205" cy="200" r="85" fill="none" stroke="rgba(201,147,58,0.2)" stroke-width="0.6"/>
+
+          <!-- ΩΝ letters in halo -->
+          <text x="178" y="210" font-size="22" font-family="serif" fill="#8B6020" opacity="0.55">ω</text>
+          <text x="218" y="210" font-size="22" font-family="serif" fill="#8B6020" opacity="0.55">Ν</text>
+
+          <!-- BLUE ROBE — large, flowing -->
+          <ellipse cx="205" cy="580" rx="110" ry="95" fill="#1E3870"/>
+          <path d="M102 510 Q116 475 135 482 L132 650 Q116 656 100 634Z" fill="#2A4E90"/>
+          <path d="M308 510 Q294 475 275 482 L278 650 Q294 656 310 634Z" fill="#142860"/>
+          <!-- Robe folds -->
+          <path d="M148 490 L144 632 M165 486 L161 628 M245 490 L249 632 M228 486 L232 628" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
+
+          <!-- RED inner robe -->
+          <path d="M162 468 Q205 454 248 468 L252 636 Q205 646 158 636Z" fill="#8B1E30"/>
+          <path d="M180 468 L177 630 M205 460 L205 638 M230 468 L233 630" stroke="#6A1020" stroke-width="1.5" opacity="0.35"/>
+
+          <!-- NECK -->
+          <rect x="193" y="370" width="24" height="35" fill="#C08050" rx="4"/>
+
+          <!-- HEAD -->
+          <ellipse cx="205" cy="305" rx="54" ry="60" fill="url(#skinMain)"/>
+
+          <!-- HAIR -->
+          <path d="M151 302 Q147 258 162 238 Q172 220 205 215 Q238 220 248 238 Q263 258 259 302 Q249 274 240 262 Q228 252 205 255 Q182 252 170 262 Q161 274 151 302Z" fill="#3E1A08"/>
+          <!-- Big curly locks left -->
+          <path d="M151 302 Q138 322 140 352 Q142 365 152 360" stroke="#3E1A08" stroke-width="12" fill="none" stroke-linecap="round"/>
+          <path d="M140 312 Q126 336 129 358 Q131 372 140 368" stroke="#3E1A08" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <path d="M134 325 Q120 350 124 374" stroke="#3E1A08" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <!-- Big curly locks right -->
+          <path d="M259 302 Q272 322 270 352 Q268 365 258 360" stroke="#3E1A08" stroke-width="12" fill="none" stroke-linecap="round"/>
+          <path d="M270 312 Q284 336 281 358 Q279 372 270 368" stroke="#3E1A08" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <path d="M276 325 Q290 350 286 374" stroke="#3E1A08" stroke-width="8" fill="none" stroke-linecap="round"/>
+
+          <!-- EYES -->
+          <ellipse cx="188" cy="298" rx="8.5" ry="9.5" fill="#2A1005"/>
+          <ellipse cx="222" cy="298" rx="8.5" ry="9.5" fill="#2A1005"/>
+          <ellipse cx="185" cy="295" rx="4"   ry="4.5" fill="white"/>
+          <ellipse cx="219" cy="295" rx="4"   ry="4.5" fill="white"/>
+          <ellipse cx="186" cy="296" rx="1.8" ry="1.8" fill="#0A0000"/>
+          <ellipse cx="220" cy="296" rx="1.8" ry="1.8" fill="#0A0000"/>
+          <!-- Eyebrows -->
+          <path d="M180 287 Q188 283 196 287" stroke="#3E1A08" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M214 287 Q222 283 230 287" stroke="#3E1A08" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <!-- Nose -->
+          <path d="M200 310 Q205 320 210 310" stroke="#A07040" stroke-width="1.5" fill="none"/>
+          <!-- Mouth -->
+          <path d="M192 335 Q205 342 218 335" stroke="#8B4513" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+          <!-- ══ THISTLE CROWN ══ -->
+          <!-- Stems -->
+          <path d="M205 228 L205 188" stroke="#4A7C3F" stroke-width="3"/>
+          <path d="M205 210 L185 190" stroke="#4A7C3F" stroke-width="2.5"/>
+          <path d="M205 210 L225 190" stroke="#4A7C3F" stroke-width="2.5"/>
+          <path d="M185 200 L165 182" stroke="#4A7C3F" stroke-width="2"/>
+          <path d="M225 200 L245 182" stroke="#4A7C3F" stroke-width="2"/>
+          <path d="M165 190 L148 172" stroke="#4A7C3F" stroke-width="1.5"/>
+          <path d="M245 190 L262 172" stroke="#4A7C3F" stroke-width="1.5"/>
+          <!-- Thistle heads -->
+          <circle cx="205" cy="178" r="20" fill="#7B4F8E"/>
+          <circle cx="185" cy="182" r="17" fill="#6B3F7E" opacity="0.9"/>
+          <circle cx="225" cy="182" r="17" fill="#6B3F7E" opacity="0.9"/>
+          <circle cx="163" cy="165" r="13" fill="#5B2F6E" opacity="0.85"/>
+          <circle cx="247" cy="165" r="13" fill="#5B2F6E" opacity="0.85"/>
+          <circle cx="146" cy="155" r="10" fill="#4B1F5E" opacity="0.8"/>
+          <circle cx="264" cy="155" r="10" fill="#4B1F5E" opacity="0.8"/>
+          <!-- Blooms -->
+          <circle cx="205" cy="166" r="12" fill="#C480D8" opacity="0.7"/>
+          <circle cx="185" cy="170" r="9"  fill="#B470C8" opacity="0.65"/>
+          <circle cx="225" cy="170" r="9"  fill="#B470C8" opacity="0.65"/>
+          <circle cx="163" cy="155" r="7"  fill="#A460B8" opacity="0.6"/>
+          <circle cx="247" cy="155" r="7"  fill="#A460B8" opacity="0.6"/>
+          <!-- Thistle spikes -->
+          <line x1="205" y1="158" x2="205" y2="146" stroke="#3A6030" stroke-width="1.5"/>
+          <line x1="198" y1="160" x2="193" y2="150" stroke="#3A6030" stroke-width="1.5"/>
+          <line x1="212" y1="160" x2="217" y2="150" stroke="#3A6030" stroke-width="1.5"/>
+
+          <!-- BEETLE ON THISTLE -->
+          <ellipse cx="232" cy="162" rx="11" ry="8.5" fill="#111"/>
+          <ellipse cx="228" cy="158" rx="4.5" ry="3.5" fill="#1E1E1E"/>
+          <ellipse cx="236" cy="158" rx="4.5" ry="3.5" fill="#1E1E1E"/>
+          <circle cx="226" cy="155" r="2" fill="white"/>
+          <circle cx="238" cy="155" r="2" fill="white"/>
+          <circle cx="226.5" cy="155.5" r="1" fill="#DD0000"/>
+          <circle cx="238.5" cy="155.5" r="1" fill="#DD0000"/>
+          <!-- Beetle legs -->
+          <path d="M224 166 L218 172 M228 168 L224 175 M232 168 L230 176" stroke="#111" stroke-width="1.2" fill="none"/>
+          <path d="M240 166 L246 172 M236 168 L240 175" stroke="#111" stroke-width="1.2" fill="none"/>
+
+          <!-- LEFT HAND (blessing gesture) -->
+          <path d="M150 485 Q140 510 143 530 Q145 544 154 540" stroke="#C08050" stroke-width="14" fill="none" stroke-linecap="round"/>
+          <path d="M143 528 L132 546 M143 530 L140 550 M143 530 L155 546" stroke="#C08050" stroke-width="7" fill="none" stroke-linecap="round"/>
+
+          <!-- RIGHT HAND — GRACE BOX -->
+          <rect x="238" y="490" rx="7" ry="7" width="74" height="58" fill="#E8A0B8"/>
+          <rect x="238" y="490" rx="7" ry="7" width="74" height="58" fill="none" stroke="#C07890" stroke-width="2"/>
+          <!-- Lid -->
+          <rect x="238" y="490" rx="7" ry="7" width="74" height="18" fill="rgba(255,180,200,0.35)"/>
+          <!-- Ribbon -->
+          <line x1="275" y1="490" x2="275" y2="548" stroke="#C07890" stroke-width="3"/>
+          <line x1="238" y1="519" x2="312" y2="519" stroke="#C07890" stroke-width="3"/>
+          <!-- Gold clasp -->
+          <rect x="265" y="508" width="20" height="20" rx="3" fill="#C9933A" opacity="0.9"/>
+          <text x="269" y="522" font-size="12" fill="#8B5A00">✦</text>
+          <!-- Hearts -->
+          <text x="244" y="512" font-size="12" fill="#C07890">♥</text>
+          <text x="289" y="512" font-size="12" fill="#C07890">♥</text>
+          <text x="244" y="542" font-size="12" fill="#C07890">♥</text>
+          <text x="289" y="542" font-size="12" fill="#C07890">♥</text>
+
+          <!-- Glow rays from grace box -->
+          <line x1="312" y1="519" x2="334" y2="510" stroke="rgba(201,147,58,0.3)" stroke-width="1.5">
+            <animate attributeName="opacity" values="0.1;0.5;0.1" dur="2s" repeatCount="indefinite"/>
+          </line>
+          <line x1="312" y1="525" x2="340" y2="528" stroke="rgba(201,147,58,0.2)" stroke-width="1">
+            <animate attributeName="opacity" values="0.1;0.4;0.1" dur="2.5s" repeatCount="indefinite"/>
+          </line>
+          <line x1="312" y1="532" x2="336" y2="545" stroke="rgba(201,147,58,0.25)" stroke-width="1">
+            <animate attributeName="opacity" values="0.1;0.45;0.1" dur="1.8s" repeatCount="indefinite"/>
+          </line>
+
+          <!-- Floating thistle at left of Budyachok -->
+          <path d="M88 560 Q90 520 92 480 Q94 450 96 428" stroke="#4A7C3F" stroke-width="2.5" fill="none"/>
+          <circle cx="96" cy="416" r="16" fill="#7B4F8E" opacity="0.75"/>
+          <circle cx="96" cy="406" r="9"  fill="#C480D8" opacity="0.6"/>
+          <path d="M92 432 L82 418 M96 430 L96 415 M100 432 L110 418" stroke="#4A7C3F" stroke-width="1.2" fill="none"/>
+
+          <!-- IC XC on poster -->
+          <text x="102" y="102" font-family="serif" font-size="20" fill="#C9933A" opacity="0.55" font-style="normal">ĪС</text>
+          <text x="288" y="102" font-family="serif" font-size="20" fill="#C9933A" opacity="0.55">ХС</text>
+        </g>
+
+        <!-- ══════════════════════════════
+             LIGHT RAYS from top
+        ══════════════════════════════ -->
+        <g opacity="0.08">
+          <path d="M260 0 L180 350" stroke="#C9933A" stroke-width="30"/>
+          <path d="M260 0 L290 380" stroke="#C9933A" stroke-width="20"/>
+          <path d="M260 0 L240 370" stroke="rgba(201,147,58,0.5)" stroke-width="15"/>
+        </g>
+
+        <!-- Ground glow -->
+        <ellipse cx="260" cy="700" rx="180" ry="40" fill="rgba(201,147,58,0.06)" filter="url(#softS)"/>
+
+        <!-- Small flying particles -->
+        <circle cx="140" cy="420" r="2" fill="rgba(201,147,58,0.5)">
+          <animateTransform attributeName="transform" type="translate" values="0,0;-10,-30;0,0" dur="4s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0;0.6;0" dur="4s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="360" cy="380" r="1.5" fill="rgba(196,154,216,0.6)">
+          <animateTransform attributeName="transform" type="translate" values="0,0;8,-25;0,0" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0;0.7;0" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="200" cy="500" r="2" fill="rgba(201,147,58,0.4)">
+          <animateTransform attributeName="transform" type="translate" values="0,0;5,-35;0,0" dur="5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0;0.5;0" dur="5s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="310" cy="460" r="1.5" fill="rgba(90,150,80,0.5)">
+          <animateTransform attributeName="transform" type="translate" values="0,0;-6,-28;0,0" dur="3.5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0;0.6;0" dur="3.5s" repeatCount="indefinite"/>
+        </circle>
+
+      </svg>
+    </div>
+
+    <!-- Title -->
+    <div class="title-area">
+      <div class="title-ic-xc">
+        <span class="ic-xc">ĪС</span>
+        <span class="ic-xc">ХС</span>
+      </div>
+      <div class="title-ornament">
+        <div class="orn-line"></div>
+        <span class="orn-sym">✦</span>
+        <div class="orn-line"></div>
+      </div>
+      <div class="title-main">Будячок-Святий</div>
+      <div class="title-and">і</div>
+      <div class="title-sub">Таємниця Благодаті</div>
+      <div class="title-divider"></div>
+      <div class="title-tagline">"Не закон змінює людей. Любов змінює людей."</div>
+      <div class="title-credits">Homo Thistlis · Анімаційний фільм · 2025</div>
+    </div>
+
+  </div><!-- .poster -->
+</div><!-- .poster-wrap -->
+
+<script>
+// Stars
+const starsEl = document.getElementById('starsEl');
+for(let i=0;i<80;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  const sz=Math.random()*2+0.5;
+  s.style.cssText=`
+    width:${sz}px;height:${sz}px;
+    left:${Math.random()*100}%;
+    top:${Math.random()*65}%;
+    animation-duration:${Math.random()*4+2}s;
+    animation-delay:${Math.random()*4}s;
+  `;
+  starsEl.appendChild(s);
+}
+</script>
+</body>
+</html>

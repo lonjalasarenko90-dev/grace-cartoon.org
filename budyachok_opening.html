@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Будячок-Святий — Opening Scene</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9933A;
+  --gold-light: #E8C46A;
+  --thistle: #7B4F8E;
+  --thistle-bloom: #C49AD8;
+  --green: #4A7C3F;
+  --parchment: #F4EBD8;
+  --ink: #2C1810;
+  --dark: #060408;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--dark);
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--parchment);
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════
+   CINEMA SCREEN
+═══════════════════════════════ */
+.cinema-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Black bars top/bottom (cinema ratio) */
+.cinema-bar {
+  width: 100%;
+  height: clamp(28px,4vw,52px);
+  background: #000;
+  display: block;
+}
+
+#scene-canvas {
+  width: 100%;
+  aspect-ratio: 16/9;
+  position: relative;
+  overflow: hidden;
+  background: #000;
+  cursor: pointer;
+}
+
+/* ── LAYERS ── */
+.scene-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* SKY */
+#sky {
+  background: #06030A;
+  transition: background 4s ease;
+}
+#sky.dawn {
+  background: linear-gradient(180deg,
+    #0A0414 0%,
+    #1A0820 25%,
+    #3A1430 45%,
+    #6A2820 65%,
+    #C05830 80%,
+    #E08040 92%,
+    #F0A050 100%
+  );
+}
+
+/* STARS */
+#stars-layer { pointer-events:none; }
+.star-dot {
+  position:absolute;
+  border-radius:50%;
+  background:white;
+  animation: starTwinkle linear infinite;
+}
+@keyframes starTwinkle {
+  0%,100%{ opacity:0.15; transform:scale(0.7); }
+  50%    { opacity:0.9;  transform:scale(1.3); }
+}
+
+/* MOON */
+#moon {
+  position:absolute;
+  top:8%; right:12%;
+  width:7%;
+  padding-bottom:7%;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 35%, #FFF8E0, #E8D080);
+  box-shadow:0 0 30px rgba(240,220,100,0.3), 0 0 80px rgba(240,220,100,0.1);
+  opacity:1;
+  transition: opacity 5s ease;
+}
+
+/* CITY */
+#city {
+  position:absolute;
+  bottom:28%; left:0; right:0;
+  pointer-events:none;
+}
+
+/* GROUND */
+#ground {
+  position:absolute;
+  bottom:0; left:0; right:0;
+  height:30%;
+  background:linear-gradient(to top, #0A0608 0%, #0E080C 60%, transparent 100%);
+}
+
+/* MIST */
+#mist {
+  position:absolute;
+  bottom:25%; left:0; right:0;
+  height:12%;
+  background:linear-gradient(to top, rgba(30,15,20,0.7), transparent);
+  filter:blur(8px);
+  animation:mistDrift 12s ease-in-out infinite alternate;
+}
+@keyframes mistDrift {
+  from { transform:translateX(-2%); opacity:0.5; }
+  to   { transform:translateX(2%);  opacity:0.8; }
+}
+
+/* THISTLES */
+#thistles-layer { pointer-events:none; }
+
+/* BUDYACHOK character */
+#budyachok {
+  position:absolute;
+  bottom:18%;
+  left:50%;
+  transform:translateX(-50%) translateY(120%);
+  width:22%;
+  transition:transform 2.5s cubic-bezier(0.22,1,0.36,1);
+  filter:drop-shadow(0 20px 40px rgba(0,0,0,0.8));
+}
+#budyachok.visible {
+  transform:translateX(-50%) translateY(0);
+}
+#budyachok svg {
+  width:100%;
+  animation:budyachokFloat 5s ease-in-out infinite;
+}
+@keyframes budyachokFloat {
+  0%,100%{ transform:translateY(0); }
+  50%    { transform:translateY(-5px); }
+}
+
+/* Halo pulse */
+.halo-pulse {
+  animation:haloPulse 3s ease-in-out infinite alternate;
+}
+@keyframes haloPulse {
+  from { opacity:0.8; }
+  to   { opacity:1; filter:drop-shadow(0 0 12px rgba(201,147,58,0.6)); }
+}
+
+/* BEETLE */
+#beetle {
+  position:absolute;
+  top:18%; left:12%;
+  width:6%;
+  opacity:0;
+  transition:opacity 2s ease;
+  animation:beetleCrawl 8s ease-in-out infinite;
+}
+#beetle.visible { opacity:0.85; }
+@keyframes beetleCrawl {
+  0%,100%{ transform:translate(0,0) rotate(-5deg); }
+  25%    { transform:translate(3%,1%) rotate(0deg); }
+  50%    { transform:translate(1%,2%) rotate(5deg); }
+  75%    { transform:translate(-2%,1%) rotate(-3deg); }
+}
+
+/* GRACE BOX glow */
+#grace-glow {
+  position:absolute;
+  bottom:26%; left:50%;
+  transform:translateX(-50%);
+  width:8%; padding-bottom:8%;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(201,147,58,0.5), transparent);
+  opacity:0;
+  transition:opacity 2s ease;
+  filter:blur(6px);
+  animation:graceGlowPulse 2s ease-in-out infinite alternate;
+}
+#grace-glow.visible { opacity:1; }
+@keyframes graceGlowPulse {
+  from { transform:translateX(-50%) scale(0.8); }
+  to   { transform:translateX(-50%) scale(1.4); }
+}
+
+/* PARTICLES */
+#particles-layer { pointer-events:none; }
+.gold-particle {
+  position:absolute;
+  border-radius:50%;
+  background:var(--gold-light);
+  pointer-events:none;
+  animation:particleRise linear infinite;
+}
+@keyframes particleRise {
+  0%  { transform:translateY(0) scale(1); opacity:0; }
+  10% { opacity:0.7; }
+  90% { opacity:0.3; }
+  100%{ transform:translateY(-60px) scale(0.3) rotate(180deg); opacity:0; }
+}
+
+/* SUBTITLE overlays */
+#subtitle {
+  position:absolute;
+  bottom:6%; left:50%;
+  transform:translateX(-50%);
+  text-align:center;
+  width:90%;
+  pointer-events:none;
+}
+.subtitle-line {
+  display:inline-block;
+  font-size:clamp(11px,1.8vw,18px);
+  font-style:italic;
+  color:rgba(244,235,216,0.0);
+  letter-spacing:2px;
+  background:rgba(0,0,0,0.4);
+  padding:4px 16px;
+  border-left:2px solid transparent;
+  transition:color 1s ease, border-color 1s ease;
+  white-space:nowrap;
+}
+.subtitle-line.show {
+  color:rgba(244,235,216,0.9);
+  border-color:var(--gold);
+}
+
+/* SCENE TITLE */
+#scene-title {
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 1.5s ease;
+}
+#scene-title.show { opacity:1; }
+.st-eyebrow {
+  font-size:clamp(9px,1.2vw,13px);
+  letter-spacing:5px;
+  color:var(--gold);
+  text-transform:uppercase;
+  margin-bottom:8px;
+}
+.st-main {
+  font-family:'Cinzel Decorative',cursive;
+  font-size:clamp(14px,3vw,32px);
+  color:var(--gold-light);
+  text-shadow:0 0 40px rgba(201,147,58,0.5);
+  line-height:1.3;
+}
+.st-sub {
+  font-size:clamp(10px,1.5vw,16px);
+  font-style:italic;
+  color:rgba(244,235,216,0.6);
+  margin-top:6px;
+  letter-spacing:2px;
+}
+
+/* PLAY BUTTON */
+#play-btn {
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  background:rgba(6,3,10,0.6);
+  backdrop-filter:blur(2px);
+  transition:opacity 0.8s ease;
+  z-index:50;
+  cursor:pointer;
+}
+#play-btn.hidden { opacity:0; pointer-events:none; }
+.play-circle {
+  width:clamp(50px,8vw,80px);
+  height:clamp(50px,8vw,80px);
+  border-radius:50%;
+  border:2px solid var(--gold);
+  display:flex; align-items:center; justify-content:center;
+  font-size:clamp(20px,3.5vw,36px);
+  color:var(--gold);
+  transition:all 0.3s;
+  background:rgba(201,147,58,0.1);
+}
+#play-btn:hover .play-circle {
+  background:var(--gold);
+  color:var(--ink);
+  transform:scale(1.1);
+}
+.play-label {
+  font-family:'Cinzel Decorative',cursive;
+  font-size:clamp(10px,1.5vw,14px);
+  color:var(--gold);
+  letter-spacing:3px;
+}
+
+/* PROGRESS BAR */
+#progress {
+  position:absolute;
+  bottom:0; left:0;
+  height:2px;
+  background:linear-gradient(to right, var(--gold), var(--thistle-bloom));
+  width:0%;
+  transition:width 0.5s linear;
+  z-index:30;
+}
+
+/* REPLAY btn */
+#replay-btn {
+  position:absolute;
+  top:10px; right:12px;
+  z-index:40;
+  background:rgba(0,0,0,0.5);
+  border:1px solid rgba(201,147,58,0.3);
+  color:var(--gold);
+  font-size:clamp(8px,1.2vw,11px);
+  letter-spacing:2px;
+  padding:5px 12px;
+  cursor:pointer;
+  opacity:0;
+  transition:opacity 0.5s;
+  font-family:'Cormorant Garamond',serif;
+}
+#replay-btn.show { opacity:1; }
+#replay-btn:hover { background:rgba(201,147,58,0.2); }
+
+/* ═══════════════════════════════
+   SCREENPLAY SECTION
+═══════════════════════════════ */
+.screenplay-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 20px 80px;
+}
+
+.screenplay-header {
+  text-align:center;
+  margin-bottom:50px;
+  padding-bottom:30px;
+  border-bottom:1px solid rgba(201,147,58,0.2);
+}
+.sp-label {
+  font-size:10px; letter-spacing:6px; color:var(--gold);
+  text-transform:uppercase; margin-bottom:10px;
+}
+.sp-title {
+  font-family:'Cinzel Decorative',cursive;
+  font-size:clamp(20px,3.5vw,36px);
+  color:var(--gold-light);
+  margin-bottom:8px;
+}
+.sp-sub {
+  font-size:15px; font-style:italic;
+  color:rgba(244,235,216,0.5); letter-spacing:2px;
+}
+
+/* Script formatting */
+.script {
+  max-width:680px;
+  margin:0 auto;
+  font-size:clamp(14px,1.8vw,17px);
+  line-height:1.9;
+}
+
+.slug {
+  font-family:'Cinzel Decorative',cursive;
+  font-size:clamp(11px,1.5vw,14px);
+  color:var(--gold);
+  letter-spacing:3px;
+  margin: 36px 0 6px;
+  padding-bottom:6px;
+  border-bottom:1px solid rgba(201,147,58,0.2);
+}
+.slug:first-child { margin-top:0; }
+
+.action {
+  color:rgba(244,235,216,0.8);
+  margin-bottom:14px;
+  padding-left:0;
+  font-style:normal;
+}
+.action em {
+  color:var(--thistle-bloom);
+  font-style:italic;
+}
+.action strong {
+  color:var(--gold-light);
+  font-style:normal;
+  letter-spacing:1px;
+}
+
+.direction {
+  font-style:italic;
+  color:rgba(244,235,216,0.45);
+  font-size:0.9em;
+  margin-bottom:10px;
+  padding-left:20px;
+  border-left:1px solid rgba(201,147,58,0.15);
+}
+
+.character-name {
+  text-align:center;
+  font-family:'Cinzel Decorative',cursive;
+  font-size:clamp(11px,1.4vw,13px);
+  color:var(--gold);
+  letter-spacing:3px;
+  margin: 24px 0 2px;
+}
+
+.dialogue {
+  max-width:420px;
+  margin:0 auto 18px;
+  text-align:center;
+  font-style:italic;
+  color:rgba(244,235,216,0.85);
+  font-size:1.05em;
+  line-height:1.8;
+}
+.dialogue.whisper {
+  color:rgba(180,60,60,0.7);
+  font-size:0.92em;
+  letter-spacing:1px;
+}
+
+.scene-note {
+  background:rgba(201,147,58,0.05);
+  border:1px solid rgba(201,147,58,0.15);
+  padding:16px 20px;
+  margin:20px 0;
+  font-size:0.9em;
+  color:rgba(244,235,216,0.5);
+  font-style:italic;
+}
+.scene-note strong { color:var(--gold); font-style:normal; }
+
+.script-divider {
+  display:flex; align-items:center; gap:16px;
+  margin:30px 0;
+}
+.sdl { flex:1; height:1px; background:linear-gradient(to right,transparent,rgba(201,147,58,0.2),transparent); }
+.sds { color:rgba(201,147,58,0.4); font-size:14px; }
+
+/* Reveal */
+.reveal {
+  opacity:0; transform:translateY(30px);
+  transition:opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     ANIMATED OPENING SCENE
+════════════════════════════════════════ -->
+<div class="cinema-wrapper">
+  <div class="cinema-bar"></div>
+
+  <div id="scene-canvas">
+
+    <!-- PLAY BUTTON OVERLAY -->
+    <div id="play-btn" onclick="startScene()">
+      <div class="play-circle">▶</div>
+      <div class="play-label">Запустити сцену</div>
+    </div>
+
+    <!-- REPLAY -->
+    <button id="replay-btn" onclick="resetScene()">↺ Спочатку</button>
+
+    <!-- PROGRESS -->
+    <div id="progress"></div>
+
+    <!-- SKY -->
+    <div class="scene-layer" id="sky"></div>
+
+    <!-- STARS -->
+    <div class="scene-layer" id="stars-layer"></div>
+
+    <!-- MOON -->
+    <div id="moon"></div>
+
+    <!-- CITY SILHOUETTE -->
+    <div class="scene-layer" id="city">
+      <svg width="100%" height="100%" viewBox="0 0 900 200" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+        <!-- Buildings -->
+        <rect x="0"   y="60"  width="55"  height="140" fill="#0A0608"/>
+        <rect x="8"   y="40"  width="38"  height="20"  fill="#0A0608"/>
+        <rect x="58"  y="80"  width="44"  height="120" fill="#0C0809"/>
+        <rect x="105" y="50"  width="36"  height="150" fill="#09060A"/>
+        <rect x="110" y="30"  width="24"  height="20"  fill="#09060A"/>
+        <rect x="144" y="90"  width="30"  height="110" fill="#0B0708"/>
+        <rect x="177" y="70"  width="25"  height="130" fill="#0A0608"/>
+        <rect x="205" y="100" width="20"  height="100" fill="#0A0608"/>
+        <!-- Right side -->
+        <rect x="690" y="70"  width="30"  height="130" fill="#0A0608"/>
+        <rect x="723" y="50"  width="48"  height="150" fill="#0C0809"/>
+        <rect x="730" y="30"  width="32"  height="20"  fill="#0C0809"/>
+        <rect x="774" y="80"  width="36"  height="120" fill="#0A0608"/>
+        <rect x="813" y="60"  width="42"  height="140" fill="#09060A"/>
+        <rect x="858" y="90"  width="42"  height="110" fill="#0A0608"/>
+        <!-- Tiny windows -->
+        <circle cx="28"  cy="70"  r="2" fill="rgba(180,130,60,0.25)"/>
+        <circle cx="42"  cy="88"  r="1.5" fill="rgba(180,130,60,0.2)"/>
+        <circle cx="78"  cy="95"  r="2" fill="rgba(180,130,60,0.2)"/>
+        <circle cx="120" cy="62"  r="2" fill="rgba(180,130,60,0.25)"/>
+        <circle cx="155" cy="105" r="1.5" fill="rgba(180,130,60,0.2)"/>
+        <circle cx="710" cy="82"  r="2" fill="rgba(180,130,60,0.2)"/>
+        <circle cx="745" cy="62"  r="2" fill="rgba(180,130,60,0.25)"/>
+        <circle cx="790" cy="92"  r="1.5" fill="rgba(180,130,60,0.2)"/>
+        <circle cx="830" cy="72"  r="2" fill="rgba(180,130,60,0.2)"/>
+        <circle cx="872" cy="100" r="1.5" fill="rgba(180,130,60,0.2)"/>
+        <!-- Ground line -->
+        <rect x="0" y="198" width="900" height="2" fill="rgba(100,60,40,0.3)"/>
+      </svg>
+    </div>
+
+    <!-- MIST -->
+    <div id="mist"></div>
+
+    <!-- GROUND -->
+    <div id="ground"></div>
+
+    <!-- PARTICLES -->
+    <div class="scene-layer" id="particles-layer"></div>
+
+    <!-- THISTLES -->
+    <div class="scene-layer" id="thistles-layer">
+      <svg width="100%" height="100%" viewBox="0 0 900 500" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg" opacity="0.6">
+        <!-- Left thistles -->
+        <path d="M80 500 Q82 440 85 390 Q88 350 92 320" stroke="#3A6030" stroke-width="2.5" fill="none"/>
+        <circle cx="92" cy="308" r="16" fill="#5A3F6E" opacity="0.8"/>
+        <circle cx="92" cy="296" r="9"  fill="#9B70B8" opacity="0.6"/>
+        <path d="M88 318 L78 304 M92 316 L92 300 M96 318 L106 304" stroke="#3A6030" stroke-width="1.2" fill="none"/>
+
+        <path d="M40 500 Q43 450 47 410 Q51 378 55 355" stroke="#3A6030" stroke-width="2" fill="none"/>
+        <circle cx="55" cy="343" r="13" fill="#4E3562" opacity="0.75"/>
+        <circle cx="55" cy="333" r="7"  fill="#8B60A0" opacity="0.55"/>
+
+        <path d="M130 500 Q132 460 134 425 Q136 398 138 378" stroke="#3A6030" stroke-width="2" fill="none"/>
+        <circle cx="138" cy="366" r="11" fill="#5A3F6E" opacity="0.7"/>
+
+        <!-- Right thistles -->
+        <path d="M820 500 Q818 440 815 390 Q812 350 808 320" stroke="#3A6030" stroke-width="2.5" fill="none"/>
+        <circle cx="808" cy="308" r="16" fill="#5A3F6E" opacity="0.8"/>
+        <circle cx="808" cy="296" r="9"  fill="#9B70B8" opacity="0.6"/>
+        <path d="M804 318 L794 304 M808 316 L808 300 M812 318 L822 304" stroke="#3A6030" stroke-width="1.2" fill="none"/>
+
+        <path d="M860 500 Q857 450 853 410 Q849 378 845 355" stroke="#3A6030" stroke-width="2" fill="none"/>
+        <circle cx="845" cy="343" r="13" fill="#4E3562" opacity="0.75"/>
+        <circle cx="845" cy="333" r="7"  fill="#8B60A0" opacity="0.55"/>
+
+        <path d="M770 500 Q768 460 766 425 Q764 398 762 378" stroke="#3A6030" stroke-width="2" fill="none"/>
+        <circle cx="762" cy="366" r="11" fill="#5A3F6E" opacity="0.7"/>
+      </svg>
+    </div>
+
+    <!-- GRACE GLOW -->
+    <div id="grace-glow"></div>
+
+    <!-- BEETLE -->
+    <div id="beetle">
+      <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="40" cy="36" rx="28" ry="22" fill="#111"/>
+        <path d="M40 18 L40 56" stroke="rgba(50,50,50,0.8)" stroke-width="1.2"/>
+        <ellipse cx="40" cy="22" rx="22" ry="13" fill="#181818"/>
+        <ellipse cx="40" cy="14" rx="17" ry="12" fill="#0E0E0E"/>
+        <ellipse cx="30" cy="13" rx="7.5" ry="9"   fill="#330000"/>
+        <ellipse cx="50" cy="13" rx="7.5" ry="9"   fill="#330000"/>
+        <ellipse cx="30" cy="13" rx="4.5" ry="5.5" fill="#880000"/>
+        <ellipse cx="50" cy="13" rx="4.5" ry="5.5" fill="#880000"/>
+        <ellipse cx="30" cy="13" rx="2.5" ry="3"   fill="#DD0000"/>
+        <ellipse cx="50" cy="13" rx="2.5" ry="3"   fill="#DD0000"/>
+        <ellipse cx="30" cy="13" rx="8" ry="10" fill="none" stroke="rgba(220,0,0,0.2)" stroke-width="2"/>
+        <ellipse cx="50" cy="13" rx="8" ry="10" fill="none" stroke="rgba(220,0,0,0.2)" stroke-width="2"/>
+        <path d="M30 6 Q22 -2 15 -8" stroke="#222" stroke-width="1.5" fill="none"/>
+        <circle cx="14" cy="-9" r="2.5" fill="#1A1A1A"/>
+        <path d="M50 6 Q58 -2 65 -8" stroke="#222" stroke-width="1.5" fill="none"/>
+        <circle cx="66" cy="-9" r="2.5" fill="#1A1A1A"/>
+        <path d="M16 30 Q4  25 -4 30" stroke="#181818" stroke-width="2.5" fill="none"/>
+        <path d="M14 40 Q2  40 -5 47" stroke="#181818" stroke-width="2.5" fill="none"/>
+        <path d="M64 30 Q76 25 84 30" stroke="#181818" stroke-width="2.5" fill="none"/>
+        <path d="M66 40 Q78 40 85 47" stroke="#181818" stroke-width="2.5" fill="none"/>
+      </svg>
+    </div>
+
+    <!-- BUDYACHOK CHARACTER -->
+    <div id="budyachok">
+      <svg viewBox="0 0 200 310" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="haloS" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#F8E060"/>
+            <stop offset="55%" stop-color="#C9933A"/>
+            <stop offset="100%" stop-color="rgba(201,147,58,0.05)"/>
+          </radialGradient>
+          <radialGradient id="skinS" cx="40%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#E8B888"/>
+            <stop offset="100%" stop-color="#C08050"/>
+          </radialGradient>
+          <filter id="glowS"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+
+        <!-- Halo glow aura -->
+        <circle cx="100" cy="108" r="70" fill="rgba(201,147,58,0.1)" filter="url(#glowS)" class="halo-pulse"/>
+        <!-- Halo -->
+        <circle cx="100" cy="108" r="58" fill="url(#haloS)" class="halo-pulse"/>
+        <circle cx="100" cy="108" r="58" fill="none" stroke="#C9933A" stroke-width="1.2" opacity="0.6"/>
+        <line x1="42" y1="108" x2="158" y2="108" stroke="#C9933A" stroke-width="0.8" opacity="0.4"/>
+        <line x1="100" y1="50"  x2="100" y2="166" stroke="#C9933A" stroke-width="0.8" opacity="0.4"/>
+        <text x="84" y="115" font-size="12" font-family="serif" fill="#8B6020" opacity="0.55">ω</text>
+        <text x="104" y="115" font-size="12" font-family="serif" fill="#8B6020" opacity="0.55">Ν</text>
+
+        <!-- Body -->
+        <ellipse cx="100" cy="255" rx="52" ry="46" fill="#1E3870"/>
+        <path d="M54 228 Q62 208 74 213 L72 288Z" fill="#2A4E90"/>
+        <path d="M146 228 Q138 208 126 213 L128 288Z" fill="#142860"/>
+        <path d="M78 196 Q100 186 122 196 L124 285 Q100 292 76 285Z" fill="#8B1E30"/>
+
+        <!-- Head -->
+        <ellipse cx="100" cy="108" rx="30" ry="34" fill="url(#skinS)"/>
+        <rect x="88" y="136" width="24" height="22" fill="#C08050" rx="3"/>
+
+        <!-- Hair -->
+        <path d="M70 106 Q68 82 78 68 Q86 58 100 55 Q114 58 122 68 Q132 82 130 106 Q122 90 116 84 Q108 78 100 80 Q92 78 84 84 Q78 90 70 106Z" fill="#3E1A08"/>
+        <path d="M70 106 Q64 120 66 138 Q68 148 76 145" stroke="#3E1A08" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M64 114 Q58 128 60 142" stroke="#3E1A08" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M130 106 Q136 120 134 138 Q132 148 124 145" stroke="#3E1A08" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M136 114 Q142 128 140 142" stroke="#3E1A08" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+        <!-- Eyes -->
+        <ellipse cx="90"  cy="105" rx="5" ry="5.5" fill="#2A1005"/>
+        <ellipse cx="110" cy="105" rx="5" ry="5.5" fill="#2A1005"/>
+        <ellipse cx="88.5" cy="103.5" rx="2.2" ry="2.2" fill="white"/>
+        <ellipse cx="108.5" cy="103.5" rx="2.2" ry="2.2" fill="white"/>
+        <path d="M85 98 Q90 95 95 98" stroke="#3E1A08" stroke-width="1.5" fill="none"/>
+        <path d="M105 98 Q110 95 115 98" stroke="#3E1A08" stroke-width="1.5" fill="none"/>
+        <path d="M97 116 Q100 121 103 116" stroke="#A07040" stroke-width="1" fill="none"/>
+        <path d="M91 128 Q100 133 109 128" stroke="#8B4513" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+        <!-- Thistle crown -->
+        <path d="M100 68 L100 46" stroke="#4A7C3F" stroke-width="2.5"/>
+        <path d="M100 58 L88 42"  stroke="#4A7C3F" stroke-width="2"/>
+        <path d="M100 58 L112 42" stroke="#4A7C3F" stroke-width="2"/>
+        <path d="M88 50 L78 36"  stroke="#4A7C3F" stroke-width="1.5"/>
+        <path d="M112 50 L122 36" stroke="#4A7C3F" stroke-width="1.5"/>
+        <circle cx="100" cy="36" r="12" fill="#7B4F8E"/>
+        <circle cx="88"  cy="34" r="10" fill="#6B3F7E" opacity="0.9"/>
+        <circle cx="112" cy="34" r="10" fill="#6B3F7E" opacity="0.9"/>
+        <circle cx="78"  cy="27" r="8"  fill="#5B2F6E" opacity="0.85"/>
+        <circle cx="122" cy="27" r="8"  fill="#5B2F6E" opacity="0.85"/>
+        <circle cx="100" cy="27" r="7"  fill="#C480D8" opacity="0.7"/>
+        <circle cx="88"  cy="25" r="5"  fill="#B470C8" opacity="0.65"/>
+        <circle cx="112" cy="25" r="5"  fill="#B470C8" opacity="0.65"/>
+        <!-- Spikes -->
+        <line x1="100" y1="24" x2="100" y2="14" stroke="#3A6030" stroke-width="1.2"/>
+        <line x1="95"  y1="25" x2="91"  y2="16" stroke="#3A6030" stroke-width="1.2"/>
+        <line x1="105" y1="25" x2="109" y2="16" stroke="#3A6030" stroke-width="1.2"/>
+
+        <!-- Hand + grace box -->
+        <path d="M72 210 Q66 228 68 242 Q70 252 78 249" stroke="#C08050" stroke-width="9" fill="none" stroke-linecap="round"/>
+        <rect x="118" y="210" rx="4" ry="4" width="46" height="36" fill="#E8A0B8"/>
+        <rect x="118" y="210" rx="4" ry="4" width="46" height="36" fill="none" stroke="#C07890" stroke-width="1.5"/>
+        <line x1="141" y1="210" x2="141" y2="246" stroke="#C07890" stroke-width="2"/>
+        <line x1="118" y1="228" x2="164" y2="228" stroke="#C07890" stroke-width="2"/>
+        <rect x="133" y="220" width="16" height="16" rx="2" fill="#C9933A" opacity="0.9"/>
+        <text x="137" y="231" font-size="10" fill="#8B5A00">✦</text>
+        <text x="123" y="223" font-size="9" fill="#C07890">♥</text>
+        <text x="153" y="223" font-size="9" fill="#C07890">♥</text>
+        <text x="123" y="243" font-size="9" fill="#C07890">♥</text>
+        <text x="153" y="243" font-size="9" fill="#C07890">♥</text>
+
+        <!-- Animated glow rays from box -->
+        <line x1="164" y1="226" x2="178" y2="220" stroke="rgba(201,147,58,0.5)" stroke-width="1.5">
+          <animate attributeName="opacity" values="0.2;0.8;0.2" dur="1.5s" repeatCount="indefinite"/>
+        </line>
+        <line x1="164" y1="230" x2="180" y2="232" stroke="rgba(201,147,58,0.4)" stroke-width="1">
+          <animate attributeName="opacity" values="0.1;0.6;0.1" dur="2s" repeatCount="indefinite"/>
+        </line>
+        <line x1="164" y1="234" x2="178" y2="242" stroke="rgba(201,147,58,0.35)" stroke-width="1">
+          <animate attributeName="opacity" values="0.15;0.7;0.15" dur="1.8s" repeatCount="indefinite"/>
+        </line>
+      </svg>
+    </div>
+
+    <!-- SUBTITLES -->
+    <div id="subtitle">
+      <div class="subtitle-line" id="sub1">Місто, де квіти не ростуть…</div>
+    </div>
+
+    <!-- SCENE TITLE CARD -->
+    <div id="scene-title">
+      <div class="st-eyebrow">Сцена перша</div>
+      <div class="st-main">Будячок-Святий<br>і Таємниця Благодаті</div>
+      <div class="st-sub">Анімаційний фільм</div>
+    </div>
+
+  </div><!-- #scene-canvas -->
+
+  <div class="cinema-bar"></div>
+</div><!-- .cinema-wrapper -->
+
+
+<!-- ════════════════════════════════════════
+     SCREENPLAY
+════════════════════════════════════════ -->
+<div class="screenplay-section">
+
+  <div class="screenplay-header reveal">
+    <p class="sp-label">Сценарій · Серія 1</p>
+    <h2 class="sp-title">Місто, де квіти не ростуть</h2>
+    <p class="sp-sub">Будячок-Святий і Таємниця Благодаті</p>
+  </div>
+
+  <div class="script">
+
+    <div class="slug reveal">ЗОВ. МІСТО ТІНЕЙ — НІЧ</div>
+    <p class="action reveal">
+      Камера повільно опускається з темного неба. Зорі є, але вони тьмяні — немов хтось зменшив яскравість світу.<br><br>
+      Місто внизу — сіре. Будинки без кольору. Жодного квітника, жодного дерева. Лише камінь і тінь.
+    </p>
+    <p class="direction reveal">(Музика: тихе, низьке гудіння. Немов серце, яке боїться битися.)</p>
+
+    <div class="script-divider reveal"><div class="sdl"></div><span class="sds">✦</span><div class="sdl"></div></div>
+
+    <div class="slug reveal">ЗОВ. ВУЛИЦЯ — НІЧ</div>
+    <p class="action reveal">
+      Люди йдуть, дивлячись у землю. Ніхто не піднімає очей. На плечі кожної людини — <em>маленький чорний жук</em>. Вони цього не помічають.
+    </p>
+    <div class="scene-note reveal">
+      <strong>ПРИМІТКА РЕЖИСЕРА:</strong> Жуки не рухаються. Вони просто є. Як тягар, до якого звикли. Глядач бачить їх — персонажі ні.
+    </div>
+
+    <div class="character-name reveal">ЖУК ОСУДУ</div>
+    <p class="dialogue whisper reveal">(шепоче на вухо людині)
+      <br>"Ти зробив це неправильно.<br>Ти знову недостатній.<br>Пам'ятаєш?"
+    </p>
+
+    <p class="action reveal">
+      Людина трохи опускає плечі. Вона навіть не знає чому.
+    </p>
+
+    <div class="script-divider reveal"><div class="sdl"></div><span class="sds">🌿</span><div class="sdl"></div></div>
+
+    <div class="slug reveal">ЗОВ. КРАЙ МІСТА — ПЕРЕД СВІТАНКОМ</div>
+    <p class="action reveal">
+      На горизонті — щось дивне. <em>Маленька точка світла.</em> Вона рухається. Камера повільно наближається.<br><br>
+      Це <strong>БУДЯЧОК-СВЯТИЙ</strong>. Він іде. Просто іде — але над його головою горить золоте коло. Корона з будяків. У руці — рожева коробочка, з якої просочується теплий відблиск.
+    </p>
+    <p class="direction reveal">(Музика змінюється: з'являється єдина нота — висока, тиха, як дзвін.)</p>
+
+    <div class="scene-note reveal">
+      <strong>ДЕТАЛЬ:</strong> Там, де він ступає — в бруківці з'являються крихітні тріщини. І з цих тріщин — будяки. Колючі, фіолетові, живі.
+    </div>
+
+    <div class="script-divider reveal"><div class="sdl"></div><span class="sds">✦</span><div class="sdl"></div></div>
+
+    <div class="slug reveal">ЗОВ. ВУЛИЦЯ — РАНОК. ПЕРШІ ПРОМЕНІ</div>
+    <p class="action reveal">
+      Будячок-Святий зупиняється посеред вулиці. Люди обходять його стороною. Хтось прискорює крок. Хтось дивиться косо.<br><br>
+      Старий Проповідник виходить з тіні. Розгортає свій Сувій.
+    </p>
+
+    <div class="character-name reveal">СТАРИЙ ПРОПОВІДНИК</div>
+    <p class="dialogue reveal">
+      "Хто ти такий, щоб тут стояти?<br>
+      Ти знаєш закон?<br>
+      Ти виконав закон?"
+    </p>
+
+    <div class="character-name reveal">БУДЯЧОК-СВЯТИЙ</div>
+    <p class="dialogue reveal">
+      (тихо, але без страху)<br>
+      "Я знаю. Але я ніс не закон."
+    </p>
+
+    <p class="action reveal">
+      Тиша. Жук на плечі Проповідника <em>ворушить лапами</em> — вперше за весь фільм.
+    </p>
+
+    <div class="script-divider reveal"><div class="sdl"></div><span class="sds">🌿</span><div class="sdl"></div></div>
+
+    <div class="slug reveal">ЗОВ. ТА САМА ВУЛИЦЯ — РАНОК</div>
+    <p class="action reveal">
+      З натовпу виходить <strong>ДІВЧИНКА НАДІЯ</strong>. Вона єдина дивиться Будячкові в очі. На її плечі теж є жук — але він мовчить. Здається, він здивований.
+    </p>
+
+    <div class="character-name reveal">ДІВЧИНКА НАДІЯ</div>
+    <p class="dialogue reveal">
+      "Що у тій коробочці?"
+    </p>
+
+    <div class="character-name reveal">БУДЯЧОК-СВЯТИЙ</div>
+    <p class="dialogue reveal">
+      "Хочеш — подивись сама."
+    </p>
+
+    <p class="action reveal">
+      Надія простягає руку. Камера наближається до коробочки — повільно, як у сні.<br><br>
+      <em>Вона відкриває кришку.</em><br><br>
+      Золоте світло заливає її обличчя. Ми не бачимо, що всередині. Ще не час.<br><br>
+      Але жук з її плеча — <strong>зникає</strong>.
+    </p>
+
+    <div class="scene-note reveal">
+      <strong>КІНЕЦЬ ПЕРШОЇ СЦЕНИ.</strong><br>
+      Наступна сцена: "Місто починає чути."
+    </div>
+
+    <div class="script-divider reveal"><div class="sdl"></div><span class="sds">✦</span><div class="sdl"></div></div>
+
+    <p class="action reveal" style="text-align:center; font-style:italic; color:rgba(201,147,58,0.6); letter-spacing:2px; font-size:1.1em;">
+      "Не закон змінює людей.<br>Любов змінює людей."
+    </p>
+
+  </div>
+</div>
+
+<script>
+// ── STARS ──
+const starsLayer = document.getElementById('stars-layer');
+for(let i=0;i<60;i++){
+  const s=document.createElement('div');
+  s.className='star-dot';
+  const sz=Math.random()*1.8+0.4;
+  s.style.cssText=`
+    width:${sz}px;height:${sz}px;
+    left:${Math.random()*100}%;
+    top:${Math.random()*70}%;
+    animation-duration:${Math.random()*4+2}s;
+    animation-delay:${Math.random()*4}s;
+  `;
+  starsLayer.appendChild(s);
+}
+
+// ── PARTICLES ──
+function spawnParticle(){
+  const p=document.createElement('div');
+  p.className='gold-particle';
+  const sz=Math.random()*3+1;
+  p.style.cssText=`
+    width:${sz}px;height:${sz}px;
+    left:${40+Math.random()*20}%;
+    bottom:${18+Math.random()*15}%;
+    animation-duration:${Math.random()*3+2}s;
+    animation-delay:${Math.random()*2}s;
+  `;
+  document.getElementById('particles-layer').appendChild(p);
+  setTimeout(()=>p.remove(), 5000);
+}
+
+// ── SCENE TIMELINE ──
+let sceneRunning=false;
+let timers=[];
+
+function clearTimers(){ timers.forEach(t=>clearTimeout(t)); timers=[]; }
+function after(ms,fn){ const t=setTimeout(fn,ms); timers.push(t); return t; }
+
+function updateProgress(pct){
+  document.getElementById('progress').style.width=pct+'%';
+}
+
+function startScene(){
+  if(sceneRunning) return;
+  sceneRunning=true;
+  document.getElementById('play-btn').classList.add('hidden');
+
+  const total=18000;
+  let start=Date.now();
+  const progInterval=setInterval(()=>{
+    const elapsed=Date.now()-start;
+    updateProgress(Math.min(100,elapsed/total*100));
+    if(elapsed>=total) clearInterval(progInterval);
+  },100);
+
+  // T=0: Title card
+  document.getElementById('scene-title').classList.add('show');
+  after(2500,()=>{
+    document.getElementById('scene-title').classList.remove('show');
+  });
+
+  // T=2: Sky starts turning (night → pre-dawn)
+  after(2000,()=>{
+    document.getElementById('sky').style.background=
+      'linear-gradient(180deg,#080310 0%,#120820 30%,#200A10 60%,#0A0608 100%)';
+  });
+
+  // T=3: Subtitle appears
+  after(3000,()=>{
+    document.getElementById('sub1').classList.add('show');
+  });
+  after(5500,()=>{
+    document.getElementById('sub1').classList.remove('show');
+  });
+
+  // T=4: Beetle appears
+  after(4000,()=>{
+    document.getElementById('beetle').classList.add('visible');
+  });
+
+  // T=5.5: Budyachok rises
+  after(5500,()=>{
+    document.getElementById('budyachok').classList.add('visible');
+    // Start grace glow
+    after(1500,()=>document.getElementById('grace-glow').classList.add('visible'));
+  });
+
+  // T=6: Particle spawning
+  after(6000,()=>{
+    const interval=setInterval(spawnParticle,400);
+    timers.push(interval);
+    after(10000,()=>clearInterval(interval));
+  });
+
+  // T=8: Dawn begins
+  after(8000,()=>{
+    document.getElementById('sky').classList.add('dawn');
+    document.getElementById('moon').style.opacity='0';
+  });
+
+  // T=10: Beetle fades (grace is working)
+  after(10000,()=>{
+    document.getElementById('beetle').style.opacity='0';
+    document.getElementById('beetle').style.transition='opacity 3s ease';
+  });
+
+  // T=12: sub2
+  after(12000,()=>{
+    document.getElementById('sub1').textContent='Там, де він ступає — виростають будяки…';
+    document.getElementById('sub1').classList.add('show');
+  });
+  after(15000,()=>{
+    document.getElementById('sub1').classList.remove('show');
+  });
+
+  // T=16: Final subtitle
+  after(16000,()=>{
+    document.getElementById('sub1').textContent='"Не закон. Любов."';
+    document.getElementById('sub1').classList.add('show');
+  });
+
+  // T=18: Show replay
+  after(18000,()=>{
+    document.getElementById('replay-btn').classList.add('show');
+    updateProgress(100);
+    sceneRunning=false;
+  });
+}
+
+function resetScene(){
+  clearTimers();
+  sceneRunning=false;
+  document.getElementById('play-btn').classList.remove('hidden');
+  document.getElementById('replay-btn').classList.remove('show');
+  document.getElementById('scene-title').classList.remove('show');
+  document.getElementById('sky').classList.remove('dawn');
+  document.getElementById('sky').style.background='';
+  document.getElementById('moon').style.opacity='1';
+  document.getElementById('moon').style.transition='';
+  document.getElementById('budyachok').classList.remove('visible');
+  document.getElementById('beetle').classList.remove('visible');
+  document.getElementById('beetle').style.opacity='';
+  document.getElementById('beetle').style.transition='';
+  document.getElementById('grace-glow').classList.remove('visible');
+  document.getElementById('sub1').classList.remove('show');
+  document.getElementById('sub1').textContent='Місто, де квіти не ростуть…';
+  document.getElementById('particles-layer').innerHTML='';
+  updateProgress(0);
+}
+
+// Scroll reveal
+const revEls=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:0.1});
+revEls.forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

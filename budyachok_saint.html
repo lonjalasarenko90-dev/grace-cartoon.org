@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Будячок-Святий — Мультфільм про Благодать</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9933A;
+    --gold-light: #E8C46A;
+    --gold-pale: #F5E8C0;
+    --thistle: #7B4F8E;
+    --thistle-light: #B07DC4;
+    --thistle-bloom: #D4A0E8;
+    --parchment: #F2E8D5;
+    --parchment-dark: #E8D8BC;
+    --ink: #2C1810;
+    --ink-soft: #5C3D2E;
+    --red-robe: #9B2335;
+    --blue-robe: #2B4F8A;
+    --green-stem: #4A7C3F;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--parchment);
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* Parchment texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      radial-gradient(ellipse at 20% 20%, rgba(201,147,58,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(123,79,142,0.06) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page { position: relative; z-index: 1; }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 20px;
+    position: relative;
+  }
+
+  .hero-ornament {
+    font-size: 14px;
+    letter-spacing: 6px;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s forwards;
+  }
+
+  .hero-ic-xc {
+    display: flex;
+    gap: 60px;
+    align-items: center;
+    margin: 20px 0;
+    opacity: 0;
+    animation: fadeUp 1s 0.5s forwards;
+  }
+
+  .ic-xc-text {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 13px;
+    color: var(--ink-soft);
+    letter-spacing: 3px;
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 2px;
+  }
+
+  /* Central icon illustration */
+  .icon-container {
+    position: relative;
+    width: 240px;
+    height: 240px;
+    margin: 10px 0;
+    opacity: 0;
+    animation: fadeIn 1.5s 0.7s forwards;
+  }
+
+  .halo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--gold-light) 0%, var(--gold) 60%, rgba(201,147,58,0.3) 100%);
+    box-shadow: 0 0 40px rgba(201,147,58,0.4), 0 0 80px rgba(201,147,58,0.2);
+  }
+
+  .halo-cross {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 160px;
+    height: 160px;
+  }
+
+  .halo-cross::before, .halo-cross::after {
+    content: '';
+    position: absolute;
+    background: rgba(201,147,58,0.5);
+  }
+  .halo-cross::before {
+    width: 100%; height: 1px;
+    top: 50%; left: 0;
+  }
+  .halo-cross::after {
+    width: 1px; height: 100%;
+    top: 0; left: 50%;
+  }
+
+  .icon-figure {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -40%);
+    z-index: 2;
+  }
+
+  /* SVG Icon */
+  .saint-svg {
+    width: 240px;
+    height: 240px;
+  }
+
+  /* Thistle decorations */
+  .thistle-left, .thistle-right {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.7;
+  }
+  .thistle-left { left: -60px; }
+  .thistle-right { right: -60px; transform: translateY(-50%) scaleX(-1); }
+
+  .hero-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+    margin: 20px 0 10px;
+    opacity: 0;
+    animation: fadeUp 1s 1s forwards;
+  }
+
+  .hero-subtitle {
+    font-size: clamp(16px, 2.5vw, 22px);
+    font-style: italic;
+    color: var(--ink-soft);
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+    opacity: 0;
+    animation: fadeUp 1s 1.2s forwards;
+  }
+
+  .hero-quote {
+    font-size: clamp(14px, 2vw, 18px);
+    font-style: italic;
+    color: var(--thistle);
+    max-width: 500px;
+    line-height: 1.8;
+    border-left: 3px solid var(--gold);
+    padding-left: 20px;
+    text-align: left;
+    opacity: 0;
+    animation: fadeUp 1s 1.5s forwards;
+  }
+
+  .scroll-hint {
+    margin-top: 50px;
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: pulse 2s 2s infinite;
+  }
+
+  /* ===== DIVIDER ===== */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 40px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  .divider-symbol {
+    color: var(--gold);
+    font-size: 20px;
+  }
+
+  /* ===== SECTIONS ===== */
+  .section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 30px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 5px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .section-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(20px, 3vw, 32px);
+    color: var(--ink);
+    margin-bottom: 30px;
+    position: relative;
+  }
+
+  .section-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 2px;
+    background: var(--gold);
+    margin-top: 12px;
+  }
+
+  /* ===== SYNOPSIS ===== */
+  .synopsis-text {
+    font-size: clamp(15px, 2vw, 19px);
+    line-height: 2;
+    color: var(--ink-soft);
+    column-count: 2;
+    column-gap: 40px;
+  }
+
+  @media (max-width: 600px) {
+    .synopsis-text { column-count: 1; }
+  }
+
+  .synopsis-highlight {
+    font-style: italic;
+    color: var(--thistle);
+    font-size: 1.1em;
+  }
+
+  /* ===== CHARACTERS ===== */
+  .characters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-top: 20px;
+  }
+
+  .character-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.6), rgba(245,232,192,0.4));
+    border: 1px solid rgba(201,147,58,0.3);
+    border-radius: 2px;
+    padding: 30px 20px;
+    text-align: center;
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: default;
+  }
+
+  .character-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(44,24,16,0.1);
+  }
+
+  .character-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--gold);
+  }
+
+  .character-card.antagonist::before { background: var(--ink-soft); }
+  .character-card.neutral::before { background: var(--green-stem); }
+
+  .char-symbol {
+    font-size: 48px;
+    margin-bottom: 12px;
+    display: block;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  }
+
+  .char-name {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 13px;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .char-role {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .char-role.antagonist { color: var(--ink-soft); }
+  .char-role.neutral { color: var(--green-stem); }
+
+  .char-desc {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  /* ===== EPISODES ===== */
+  .episodes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .episode {
+    display: flex;
+    gap: 30px;
+    padding: 30px 0;
+    border-bottom: 1px solid rgba(201,147,58,0.2);
+    align-items: flex-start;
+    transition: background 0.3s;
+    cursor: default;
+  }
+
+  .episode:hover {
+    background: rgba(201,147,58,0.05);
+  }
+
+  .episode-num {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 36px;
+    color: var(--gold-pale);
+    line-height: 1;
+    min-width: 60px;
+    text-align: center;
+    font-weight: 700;
+    -webkit-text-stroke: 1px var(--gold);
+  }
+
+  .episode-content { flex: 1; }
+
+  .episode-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .episode-desc {
+    font-size: 15px;
+    font-style: italic;
+    color: var(--ink-soft);
+    line-height: 1.7;
+  }
+
+  .episode-theme {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--thistle);
+    border: 1px solid var(--thistle-bloom);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  /* ===== SYMBOLISM ===== */
+  .symbolism-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+  }
+
+  .symbol-item {
+    padding: 25px;
+    border-left: 3px solid var(--gold);
+    background: rgba(255,255,255,0.4);
+  }
+
+  .symbol-icon { font-size: 32px; margin-bottom: 10px; }
+
+  .symbol-name {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .symbol-arrow {
+    color: var(--gold);
+    margin: 0 8px;
+  }
+
+  .symbol-meaning {
+    font-style: italic;
+    color: var(--thistle);
+    font-size: 14px;
+  }
+
+  .symbol-desc {
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  /* ===== TAGLINE ===== */
+  .tagline-section {
+    background: linear-gradient(135deg, var(--ink) 0%, var(--ink-soft) 100%);
+    padding: 80px 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tagline-section::before {
+    content: '✦';
+    position: absolute;
+    font-size: 300px;
+    color: rgba(201,147,58,0.05);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .tagline-text {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(18px, 4vw, 36px);
+    color: var(--gold-light);
+    line-height: 1.5;
+    max-width: 700px;
+    margin: 0 auto 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .tagline-sub {
+    font-size: 16px;
+    font-style: italic;
+    color: rgba(245,232,192,0.7);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 40px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    letter-spacing: 2px;
+  }
+
+  footer .brand {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 16px;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+
+  @keyframes haloGlow {
+    0%, 100% { box-shadow: 0 0 40px rgba(201,147,58,0.4), 0 0 80px rgba(201,147,58,0.2); }
+    50% { box-shadow: 0 0 60px rgba(201,147,58,0.6), 0 0 120px rgba(201,147,58,0.3); }
+  }
+
+  .halo { animation: haloGlow 3s ease-in-out infinite; }
+
+  .icon-container { animation: float 4s ease-in-out infinite; }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Beedle */
+  .beetle {
+    display: inline-block;
+    animation: float 2s ease-in-out infinite;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-ornament">✦ Концепт Мультфільму ✦</div>
+
+    <div class="hero-ic-xc">
+      <span class="ic-xc-text">ĪС</span>
+      <div style="width:1px; height:20px; background:var(--gold);"></div>
+      <span class="ic-xc-text">ХС</span>
+    </div>
+
+    <!-- SVG Icon character -->
+    <div class="icon-container">
+      <svg class="saint-svg" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Halo -->
+        <circle cx="120" cy="100" r="75" fill="url(#haloGrad)" opacity="0.95"/>
+        <circle cx="120" cy="100" r="75" fill="none" stroke="#C9933A" stroke-width="1.5" opacity="0.6"/>
+        <!-- Halo cross lines -->
+        <line x1="60" y1="100" x2="180" y2="100" stroke="#C9933A" stroke-width="0.8" opacity="0.4"/>
+        <line x1="120" y1="40" x2="120" y2="160" stroke="#C9933A" stroke-width="0.8" opacity="0.4"/>
+        
+        <!-- Blue robe body -->
+        <ellipse cx="120" cy="185" rx="55" ry="45" fill="#2B4F8A"/>
+        <path d="M70 165 Q80 145 90 150 L90 220 Q80 225 70 210 Z" fill="#3A6AAF"/>
+        <path d="M170 165 Q160 145 150 150 L150 220 Q160 225 170 210 Z" fill="#1E3A6E"/>
+        
+        <!-- Red robe underneath -->
+        <path d="M95 155 Q110 148 125 155 L130 220 Q110 225 90 220 Z" fill="#9B2335"/>
+        <path d="M105 155 L115 220 M125 155 L118 220" stroke="#7A1A28" stroke-width="1" opacity="0.5"/>
+        
+        <!-- Head/face -->
+        <ellipse cx="120" cy="100" rx="32" ry="36" fill="#D4A574"/>
+        <!-- Hair -->
+        <path d="M88 100 Q85 75 95 65 Q105 55 120 52 Q135 55 145 65 Q155 75 152 100 Q145 85 140 80 Q130 75 120 78 Q110 75 100 80 Q95 85 88 100Z" fill="#5C3620"/>
+        <!-- Curls left -->
+        <path d="M88 100 Q82 110 84 125 Q86 130 92 128" stroke="#5C3620" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M84 108 Q78 118 80 130" stroke="#5C3620" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <!-- Curls right -->
+        <path d="M152 100 Q158 110 156 125 Q154 130 148 128" stroke="#5C3620" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M156 108 Q162 118 160 130" stroke="#5C3620" stroke-width="4" fill="none" stroke-linecap="round"/>
+        
+        <!-- Face features -->
+        <ellipse cx="111" cy="97" rx="4" ry="4.5" fill="#4A2810"/>
+        <ellipse cx="129" cy="97" rx="4" ry="4.5" fill="#4A2810"/>
+        <ellipse cx="111" cy="96" rx="1.5" ry="2" fill="white"/>
+        <ellipse cx="129" cy="96" rx="1.5" ry="2" fill="white"/>
+        <!-- Nose -->
+        <path d="M118 103 Q120 110 122 103" stroke="#A07040" stroke-width="1.2" fill="none"/>
+        <!-- Mouth -->
+        <path d="M113 116 Q120 120 127 116" stroke="#8B4513" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- Eyebrows -->
+        <path d="M106 91 Q111 88 116 91" stroke="#4A2810" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M124 91 Q129 88 134 91" stroke="#4A2810" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        
+        <!-- Thistle crown -->
+        <circle cx="112" cy="62" r="10" fill="#7B4F8E" opacity="0.8"/>
+        <circle cx="128" cy="58" r="12" fill="#7B4F8E" opacity="0.9"/>
+        <!-- Thistle spikes -->
+        <line x1="128" y1="46" x2="128" y2="38" stroke="#4A7C3F" stroke-width="1.5"/>
+        <line x1="120" y1="44" x2="115" y2="36" stroke="#4A7C3F" stroke-width="1.5"/>
+        <line x1="136" y1="44" x2="141" y2="36" stroke="#4A7C3F" stroke-width="1.5"/>
+        <line x1="112" y1="52" x2="108" y2="44" stroke="#4A7C3F" stroke-width="1.5"/>
+        <!-- Purple blooms -->
+        <circle cx="128" cy="46" r="5" fill="#9B6AB0" opacity="0.7"/>
+        <circle cx="120" cy="42" r="4" fill="#8B5AA0" opacity="0.7"/>
+        <circle cx="136" cy="42" r="4" fill="#8B5AA0" opacity="0.7"/>
+        
+        <!-- Beetle on thistle -->
+        <ellipse cx="138" cy="50" rx="5" ry="4" fill="#1A1A1A"/>
+        <circle cx="136" cy="49" r="1.5" fill="#333"/>
+        <circle cx="140" cy="49" r="1.5" fill="#333"/>
+        <!-- Beetle eyes -->
+        <circle cx="135" cy="47.5" r="0.8" fill="white"/>
+        <circle cx="141" cy="47.5" r="0.8" fill="white"/>
+        
+        <!-- Gift box (grace box) -->
+        <rect x="138" y="165" rx="3" ry="3" width="42" height="38" fill="#E8A0B0"/>
+        <rect x="138" y="165" rx="3" ry="3" width="42" height="38" fill="none" stroke="#C07080" stroke-width="1"/>
+        <!-- Box ribbon -->
+        <line x1="159" y1="165" x2="159" y2="203" stroke="#C07080" stroke-width="2"/>
+        <line x1="138" y1="182" x2="180" y2="182" stroke="#C07080" stroke-width="2"/>
+        <!-- Hearts on box -->
+        <text x="145" y="178" font-size="7" fill="#C07080">♥</text>
+        <text x="163" y="178" font-size="7" fill="#C07080">♥</text>
+        <text x="145" y="196" font-size="7" fill="#C07080">♥</text>
+        <text x="163" y="196" font-size="7" fill="#C07080">♥</text>
+        <!-- Gold center on box -->
+        <rect x="153" y="176" width="12" height="12" rx="1" fill="#C9933A" opacity="0.7"/>
+        
+        <!-- Thistle left -->
+        <path d="M55 190 Q58 160 62 130 Q66 100 70 80" stroke="#4A7C3F" stroke-width="2" fill="none"/>
+        <path d="M70 80 Q65 70 68 62" stroke="#4A7C3F" stroke-width="2" fill="none"/>
+        <circle cx="68" cy="58" r="9" fill="#7B4F8E" opacity="0.75"/>
+        <!-- Thistle right -->
+        <path d="M195 200 Q190 168 185 138 Q180 108 176 85" stroke="#4A7C3F" stroke-width="2" fill="none"/>
+        <circle cx="176" cy="78" r="10" fill="#7B4F8E" opacity="0.75"/>
+        
+        <defs>
+          <radialGradient id="haloGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#F0D070"/>
+            <stop offset="60%" stop-color="#C9933A"/>
+            <stop offset="100%" stop-color="rgba(201,147,58,0.3)"/>
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <h1 class="hero-title">Будячок-Святий</h1>
+    <p class="hero-subtitle">Мультфільм про Благодать</p>
+
+    <blockquote class="hero-quote">
+      "Не вважай нечистим те, що Бог очистив."<br>
+      <small style="color:var(--gold); font-style:normal; letter-spacing:2px; font-size:12px;">— Діяння Апостолів 10:15</small>
+    </blockquote>
+
+    <p class="scroll-hint">↓ Гортайте ↓</p>
+  </section>
+
+  <!-- DIVIDER -->
+  <div class="divider">
+    <div class="divider-line"></div>
+    <span class="divider-symbol">✦</span>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- SYNOPSIS -->
+  <section class="section reveal">
+    <p class="section-label">Синопсис</p>
+    <h2 class="section-title">Про що мультфільм</h2>
+    <p class="synopsis-text">
+      У світі, де люди живуть у страху, провині та осуді, 
+      з'являється незвичайний герой — 
+      <span class="synopsis-highlight">Будячок-Святий</span>. 
+      Він виріс серед колючок, але ніс у собі квітку — благодать.<br><br>
+      Його не визнають правильним. Він виглядає занадто звичайним, 
+      занадто колючим. Але він несе <span class="synopsis-highlight">Коробочку Благодаті</span> — 
+      і кожен, хто її відкриває, відкриває своє серце.<br><br>
+      Мультфільм розповідає не про закон і покарання. 
+      Він розповідає про те, як <span class="synopsis-highlight">любов змінює людей</span> — 
+      коли жодне правило не може.
+    </p>
+  </section>
+
+  <!-- DIVIDER -->
+  <div class="divider">
+    <div class="divider-line"></div>
+    <span class="divider-symbol">🌿</span>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- CHARACTERS -->
+  <section class="section reveal">
+    <p class="section-label">Персонажі</p>
+    <h2 class="section-title">Герої Мультфільму</h2>
+
+    <div class="characters-grid">
+
+      <div class="character-card">
+        <span class="char-symbol">🌸</span>
+        <div class="char-name">Будячок-Святий</div>
+        <div class="char-role">Головний герой</div>
+        <p class="char-desc">Носій благодаті. Виріс серед колючок, але ніс у собі квітку любові. Тримає Коробочку Благодаті.</p>
+      </div>
+
+      <div class="character-card">
+        <span class="char-symbol">🌱</span>
+        <div class="char-name">Дівчинка Надія</div>
+        <div class="char-role">Перша послідовниця</div>
+        <p class="char-desc">Перша, хто повірив Будячку. Її серце було відкрите, бо воно вже було зранене. Символ початку.</p>
+      </div>
+
+      <div class="character-card antagonist">
+        <span class="char-symbol">📜</span>
+        <div class="char-name">Старий Проповідник</div>
+        <div class="char-role antagonist">Антагоніст</div>
+        <p class="char-desc">Живе у світі правил і покарань. Говорить людям, що вони ніколи не будуть достатньо хорошими.</p>
+      </div>
+
+      <div class="character-card antagonist">
+        <span class="char-symbol beetle">🪲</span>
+        <div class="char-name">Чорний Жук Осуду</div>
+        <div class="char-role antagonist">Темний голос</div>
+        <p class="char-desc">Шепоче людям про їхні гріхи. Малий, але отруйний. Боїться Коробочки Благодаті.</p>
+      </div>
+
+      <div class="character-card neutral">
+        <span class="char-symbol">🏙️</span>
+        <div class="char-name">Місто Тіней</div>
+        <div class="char-role neutral">Світ мультфільму</div>
+        <p class="char-desc">Де люди забули, що таке благодать. Де квіти не ростуть. Де Будячок з'являється першим.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- DIVIDER -->
+  <div class="divider">
+    <div class="divider-line"></div>
+    <span class="divider-symbol">✦</span>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- EPISODES -->
+  <section class="section reveal">
+    <p class="section-label">Серії</p>
+    <h2 class="section-title">Чотири Серії</h2>
+
+    <div class="episodes-list">
+
+      <div class="episode">
+        <div class="episode-num">01</div>
+        <div class="episode-content">
+          <div class="episode-title">Будячок знаходить Коробочку Благодаті</div>
+          <p class="episode-desc">Серед руїн і колючок Будячок знаходить скриньку, вкриту серцями і золотом. Він не знає, що в ній. Але вона тепла.</p>
+          <span class="episode-theme">Тема: Відкриття</span>
+        </div>
+      </div>
+
+      <div class="episode">
+        <div class="episode-num">02</div>
+        <div class="episode-content">
+          <div class="episode-title">Будячок зустрічає людей страху</div>
+          <p class="episode-desc">Він входить у Місто Тіней. Люди втікають від нього. Жук Осуду шепоче: "Ти занадто колючий." Але Надія зупиняється.</p>
+          <span class="episode-theme">Тема: Зустріч</span>
+        </div>
+      </div>
+
+      <div class="episode">
+        <div class="episode-num">03</div>
+        <div class="episode-content">
+          <div class="episode-title">Будячок садить Поле Благодаті</div>
+          <p class="episode-desc">Там, де він пройшов, виростають будяки — але тепер вони квітнуть. Навіть колючки стають красивими, коли в них є любов.</p>
+          <span class="episode-theme">Тема: Перетворення</span>
+        </div>
+      </div>
+
+      <div class="episode">
+        <div class="episode-num">04</div>
+        <div class="episode-content">
+          <div class="episode-title">Люди починають цвісти</div>
+          <p class="episode-desc">Коробочку відкривають. Всередині — не закон, не правила. Всередині — дзеркало, в якому кожен бачить себе улюбленим.</p>
+          <span class="episode-theme">Тема: Благодать</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- DIVIDER -->
+  <div class="divider">
+    <div class="divider-line"></div>
+    <span class="divider-symbol">🌿</span>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- SYMBOLISM -->
+  <section class="section reveal">
+    <p class="section-label">Символіка</p>
+    <h2 class="section-title">Мова Образів</h2>
+
+    <div class="symbolism-grid">
+
+      <div class="symbol-item">
+        <div class="symbol-icon">🌸</div>
+        <div class="symbol-name">Будяк</div>
+        <div style="font-size:14px; margin-bottom:8px;">
+          <span style="color:var(--ink-soft)">Колючки</span>
+          <span class="symbol-arrow">→</span>
+          <span class="symbol-meaning">Страждання і сила</span>
+        </div>
+        <p class="symbol-desc">Символ Шотландії, символ виживання. Той, хто виріс у труднощах, але розцвів.</p>
+      </div>
+
+      <div class="symbol-item">
+        <div class="symbol-icon">📦</div>
+        <div class="symbol-name">Коробочка Благодаті</div>
+        <div style="font-size:14px; margin-bottom:8px;">
+          <span style="color:var(--ink-soft)">Скринька</span>
+          <span class="symbol-arrow">→</span>
+          <span class="symbol-meaning">Незаслужена любов</span>
+        </div>
+        <p class="symbol-desc">Подарунок, якого не можна заробити. Всередині — не нагорода, а дзеркало прийняття.</p>
+      </div>
+
+      <div class="symbol-item">
+        <div class="symbol-icon">🪲</div>
+        <div class="symbol-name">Чорний Жук</div>
+        <div style="font-size:14px; margin-bottom:8px;">
+          <span style="color:var(--ink-soft)">Шепіт</span>
+          <span class="symbol-arrow">→</span>
+          <span class="symbol-meaning">Голос осуду</span>
+        </div>
+        <p class="symbol-desc">Малий, але настирливий. Живе на плечі людини. Зникає лише коли вона приймає благодать.</p>
+      </div>
+
+      <div class="symbol-item">
+        <div class="symbol-icon">✨</div>
+        <div class="symbol-name">Золотий Ореол</div>
+        <div style="font-size:14px; margin-bottom:8px;">
+          <span style="color:var(--ink-soft)">Золото</span>
+          <span class="symbol-arrow">→</span>
+          <span class="symbol-meaning">Вічна гідність</span>
+        </div>
+        <p class="symbol-desc">Не як нагорода за добрі вчинки. Як нагадування — ти вже є золото. Ще до того, як зробив щось.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TAGLINE -->
+  <section class="tagline-section reveal">
+    <div class="tagline-text">
+      "Не закон змінює людей.<br>
+      Любов змінює людей."
+    </div>
+    <p class="tagline-sub">— Будячок-Святий і Таємниця Благодаті</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="brand">Будячок-Святий</div>
+    <div>© Homo Thistlis · Концепт мультфільму про благодать</div>
+  </footer>
+
+</div>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
